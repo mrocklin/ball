@@ -90,12 +90,9 @@ EOF",
 }
 
 
-exec { "datomic/init":
-  user => "root",
-  path => ["/bin", "/usr/bin", "/usr/local/bin"],
-  cwd => "/var/lib/datomic",
-  command => "cat > /etc/init/datomic.conf <<EOS
-start on runlevel [2345]
+file { "/etc/init/datomic.conf":
+  owner => "root",
+  content => "start on runlevel [2345]
  
 pre-start script
 bash << \"EOF\"
@@ -118,7 +115,12 @@ script
 exec su - datomic -c 'cd /var/lib/datomic/runtime; /var/lib/datomic/runtime/bin/transactor /var/lib/datomic/transactor.properties 2>&1 >> /var/log/datomic/datomic.log'
 end script
  
-stop on runlevel [016]
-EOS",
-  creates => ["/etc/init/datomic.conf"]
+stop on runlevel [016]"
+}
+
+service { "datomic":
+  enable => true,
+  ensure => running,
+  provider => 'upstart',
+  require => File['/etc/init/datomic.conf'],
 }
