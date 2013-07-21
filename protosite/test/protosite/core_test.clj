@@ -29,6 +29,6 @@
 
 
 (facts "About static HTML"
-       (let [r (request "/foo.html" app)]
+       (let [r (request "/example-static-file.html" app)]
          (:status r) => 200
          (slurp (:body r)) => (contains "Hi")))
