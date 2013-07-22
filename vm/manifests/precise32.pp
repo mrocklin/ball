@@ -32,6 +32,17 @@ exec { "leiningen/install-script":
               "/home/$user/.lein"],
 }
 
+
+file { "leiningen/create-plugins-dir":
+  ensure => file,
+  path => "/home/$user/.lein/profiles.clj",
+  owner => $user,
+  group => $user,
+  mode => '755',
+  content => '{:user {:plugins [[lein-midje "3.0.0"]]}}'
+}
+
+
 # Datomic stuff - see
 # http://vaughndickson.com/2012/11/20/deploying-datomic-free-on-ec2-or-any-ubuntu-system/
 
