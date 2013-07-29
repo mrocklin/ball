@@ -141,10 +141,6 @@
                    ] distinct (apply hash-map))]
             (zipmap (map lahman-keywordify (keys m)) (vals m))))
 
-    ;:db/unique :db.unique/identity
-    ;:db/index true
-    ;:db/doc "The Hash of a commit - Unique 40 character string"
-
 (def index-keys #{:lahman.lahmanID :lahman.playerID})
 (def unique-keys #{})
 
