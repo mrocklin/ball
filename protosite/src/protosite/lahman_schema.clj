@@ -4,7 +4,7 @@
 (defn lahman-keywordify [k] (keyword (str "lahman." k)))
 
 (def idents (let [m
-                  {"lahmanID" :db.type/int
+             (->> ["lahmanID" :db.type/int
                    "playerID" :db.type/string
                    "managerID" :db.type/string
                    "hofID" :db.type/string
@@ -93,7 +93,7 @@
                    "SV" :db.type/int
                    "IPouts" :db.type/int
                    "HA" :db.type/int
-                   "HRA" :db.type/
+                   "HRA" :db.type/float
                    "BBA" :db.type/int
                    "SOA" :db.type/int
                    "E" :db.type/int
@@ -138,7 +138,7 @@
                    "SH" :db.type/int
                    "SF" :db.type/int
                    "GIDP" :db.type/int
-                   }]
+                   ] distinct (apply hash-map))]
             (zipmap (map lahman-keywordify (keys m)) (vals m))))
 
     ;:db/unique :db.unique/identity
