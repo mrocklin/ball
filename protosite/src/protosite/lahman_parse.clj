@@ -14,12 +14,18 @@
     (instance? Number s) s
     (instance? String s) (. Integer parseInt s)))
 
-(defn date-of [year month day] (read-string (apply format "#inst \"%d-%02d-%02d\"" (map parse-int [year month day]))))
+(defn date-of [year month day]
+  (->> [year month day]
+      (map parse-int)
+      (apply format "#inst \"%d-%02d-%02d\"")
+      read-string))
 
-(defn date-of-str [s] (let [[month day year] (clojure.string/split s #"/")]
+(defn date-of-str [s]
+  (let [[month day year] (clojure.string/split s #"/")]
                         (date-of year month day)))
 
-(defn lahman-keywordify [k] (keyword (str "lahman." k)))
+(defn lahman-keywordify [k]
+  (keyword (str "lahman." k)))
 
 (def int-fields #{"lahmanID" "height" "weight"})
 (def del-fields #{"birthYear" "birthMonth" "birthDay" "deathYear" "deathMonth" "deathDay"})
