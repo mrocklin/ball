@@ -10,6 +10,3 @@
           (q '[:find ?typ :where [?entity :db/ident :lahman.weight ]
                                  [?entity :db/valueType ?typ       ]] (db conn))
                => :db.type/int))
-
-
-

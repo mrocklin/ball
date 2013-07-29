@@ -1,10 +1,10 @@
 (ns protosite.lahman-schema
   (:require [datomic.api :only [db] :as d]))
 
-(defn lahman-keywordify [k] (keyword (str "lahman." k)))
+(defn lahman-keywordify [k] (keyword (str "lahman/" k)))
 
 (def idents (let [m
-             (->> ["lahmanID" :db.type/int
+             (->> ["lahmanID" :db.type/long
                    "playerID" :db.type/string
                    "managerID" :db.type/string
                    "hofID" :db.type/string
@@ -21,8 +21,8 @@
                    "nameNote" :db.type/string
                    "nameGiven" :db.type/string
                    "nameNick" :db.type/string
-                   "weight" :db.type/int
-                   "height" :db.type/int
+                   "weight" :db.type/long
+                   "height" :db.type/long
                    "bats" :db.type/string
                    "throws" :db.type/string
                    "debut" :db.type/instant
@@ -35,120 +35,118 @@
                    "bbrefID" :db.type/string
                    ; Batting
                    "playerID" :db.type/string
-                   "yearID" :db.type/int
-                   "stint" :db.type/int
+                   "yearID" :db.type/long
+                   "stint" :db.type/long
                    "teamID" :db.type/string
                    "lgID" :db.type/string
-                   "G" :db.type/int
-                   "G_batting" :db.type/int
-                   "AB" :db.type/int
-                   "R" :db.type/int
-                   "H" :db.type/int
-                   "2B" :db.type/int
-                   "3B" :db.type/int
-                   "HR" :db.type/int
-                   "RBI" :db.type/int
-                   "SB" :db.type/int
-                   "CS" :db.type/int
-                   "BB" :db.type/int
-                   "SO" :db.type/int
-                   "IBB" :db.type/int
-                   "HBP" :db.type/int
-                   "SH" :db.type/int
-                   "SF" :db.type/int
-                   "GIDP" :db.type/int
-                   "G_old" :db.type/int
+                   "G" :db.type/long
+                   "G_batting" :db.type/long
+                   "AB" :db.type/long
+                   "R" :db.type/long
+                   "H" :db.type/long
+                   "2B" :db.type/long
+                   "3B" :db.type/long
+                   "HR" :db.type/long
+                   "RBI" :db.type/long
+                   "SB" :db.type/long
+                   "CS" :db.type/long
+                   "BB" :db.type/long
+                   "SO" :db.type/long
+                   "IBB" :db.type/long
+                   "HBP" :db.type/long
+                   "SH" :db.type/long
+                   "SF" :db.type/long
+                   "GIDP" :db.type/long
+                   "G_old" :db.type/long
                    ;Team
-                   "yearID" :db.type/int
+                   "yearID" :db.type/long
                    "lgID" :db.type/string
                    "teamID" :db.type/string
                    "franchID" :db.type/string
                    "divID" :db.type/string
-                   "Rank" :db.type/int
-                   "G" :db.type/int
-                   "Ghome" :db.type/int
-                   "W" :db.type/int
-                   "L" :db.type/int
+                   "Rank" :db.type/long
+                   "G" :db.type/long
+                   "Ghome" :db.type/long
+                   "W" :db.type/long
+                   "L" :db.type/long
                    "DivWin" :db.type/string
                    "WCWin" :db.type/string
                    "LgWin" :db.type/string
                    "WSWin" :db.type/string
-                   "R" :db.type/int
-                   "AB" :db.type/int
-                   "H" :db.type/int
-                   "2B" :db.type/int
-                   "3B" :db.type/int
-                   "HR" :db.type/int
-                   "BB" :db.type/int
-                   "SO" :db.type/int
-                   "SB" :db.type/int
-                   "CS" :db.type/int
-                   "HBP" :db.type/int
-                   "SF" :db.type/int
-                   "RA" :db.type/int
-                   "ER" :db.type/int
+                   "R" :db.type/long
+                   "AB" :db.type/long
+                   "H" :db.type/long
+                   "2B" :db.type/long
+                   "3B" :db.type/long
+                   "HR" :db.type/long
+                   "BB" :db.type/long
+                   "SO" :db.type/long
+                   "SB" :db.type/long
+                   "CS" :db.type/long
+                   "HBP" :db.type/long
+                   "SF" :db.type/long
+                   "RA" :db.type/long
+                   "ER" :db.type/long
                    "ERA" :db.type/float
-                   "CG" :db.type/int
-                   "SHO" :db.type/int
-                   "SV" :db.type/int
-                   "IPouts" :db.type/int
-                   "HA" :db.type/int
+                   "CG" :db.type/long
+                   "SHO" :db.type/long
+                   "SV" :db.type/long
+                   "IPouts" :db.type/long
+                   "HA" :db.type/long
                    "HRA" :db.type/float
-                   "BBA" :db.type/int
-                   "SOA" :db.type/int
-                   "E" :db.type/int
-                   "DP" :db.type/int
+                   "BBA" :db.type/long
+                   "SOA" :db.type/long
+                   "E" :db.type/long
+                   "DP" :db.type/long
                    "FP" :db.type/float
                    "name" :db.type/string
                    "park" :db.type/string
-                   "attendance" :db.type/int
-                   "BPF" :db.type/int
-                   "PPF" :db.type/int
+                   "attendance" :db.type/long
+                   "BPF" :db.type/long
+                   "PPF" :db.type/long
                    "teamIDBR" :db.type/string
                    "teamIDlahman45" :db.type/string
                    "teamIDretro" :db.type/string
                    ; Pitching
                    "playerID" :db.type/string
-                   "yearID" :db.type/int
-                   "stint" :db.type/int
+                   "yearID" :db.type/long
+                   "stint" :db.type/long
                    "teamID" :db.type/string
                    "lgID" :db.type/string
-                   "W" :db.type/int
-                   "L" :db.type/int
-                   "G" :db.type/int
-                   "GS" :db.type/int
-                   "CG" :db.type/int
-                   "SHO" :db.type/int
-                   "SV" :db.type/int
-                   "IPouts" :db.type/int
-                   "H" :db.type/int
-                   "ER" :db.type/int
-                   "HR" :db.type/int
-                   "BB" :db.type/int
-                   "SO" :db.type/int
-                   "BAOpp" :db.type/int
-                   "ERA" :db.type/int
-                   "IBB" :db.type/int
-                   "WP" :db.type/int
-                   "HBP" :db.type/int
-                   "BK" :db.type/int
-                   "BFP" :db.type/int
-                   "GF" :db.type/int
-                   "R" :db.type/int
-                   "SH" :db.type/int
-                   "SF" :db.type/int
-                   "GIDP" :db.type/int
-                   ] distinct (apply hash-map))]
+                   "W" :db.type/long
+                   "L" :db.type/long
+                   "G" :db.type/long
+                   "GS" :db.type/long
+                   "CG" :db.type/long
+                   "SHO" :db.type/long
+                   "SV" :db.type/long
+                   "IPouts" :db.type/long
+                   "H" :db.type/long
+                   "ER" :db.type/long
+                   "HR" :db.type/long
+                   "BB" :db.type/long
+                   "SO" :db.type/long
+                   "BAOpp" :db.type/long
+                   "ERA" :db.type/long
+                   "IBB" :db.type/long
+                   "WP" :db.type/long
+                   "HBP" :db.type/long
+                   "BK" :db.type/long
+                   "BFP" :db.type/long
+                   "GF" :db.type/long
+                   "R" :db.type/long
+                   "SH" :db.type/long
+                   "SF" :db.type/long
+                   "GIDP" :db.type/long
+                   ] (partition 2) distinct flatten (apply hash-map))]
             (zipmap (map lahman-keywordify (keys m)) (vals m))))
 
-(def index-keys #{:lahman.lahmanID :lahman.playerID})
-(def unique-keys #{})
+(def index-keys #{:lahman/lahmanID :lahman/playerID})
 
 (def schema (for [[ident typ] idents]
                    {:db/id #db/id[:db.part/db]
                     :db/ident ident
                     :db/valueType typ
                     :db/cardinality :db.cardinality/one
-                    :db/unique (contains? unique-keys ident)
                     :db/index (contains? index-keys ident)
                     :db.install/_attribute :db.part/db}))

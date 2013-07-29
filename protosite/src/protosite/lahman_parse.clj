@@ -22,7 +22,7 @@
                         (date-of year month day)))
 
 (defn lahman-keywordify [k]
-  (keyword (str "lahman." k)))
+  (keyword (str "lahman/" k)))
 
 (def int-fields #{"lahmanID" "height" "weight"})
 (def del-fields #{"birthYear" "birthMonth" "birthDay" "deathYear" "deathMonth" "deathDay"})
