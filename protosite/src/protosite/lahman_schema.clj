@@ -33,6 +33,8 @@
                    "retroID" :db.type/string
                    "holtzID" :db.type/string
                    "bbrefID" :db.type/string
+                   ; Batting
+                   "playerID" :db.type/string
                    "yearID" :db.type/int
                    "stint" :db.type/int
                    "teamID" :db.type/string
@@ -56,6 +58,55 @@
                    "SF" :db.type/int
                    "GIDP" :db.type/int
                    "G_old" :db.type/int
+                   ;Team
+                   "yearID" :db.type/int
+                   "lgID" :db.type/string
+                   "teamID" :db.type/string
+                   "franchID" :db.type/string
+                   "divID" :db.type/string
+                   "Rank" :db.type/int
+                   "G" :db.type/int
+                   "Ghome" :db.type/int
+                   "W" :db.type/int
+                   "L" :db.type/int
+                   "DivWin" :db.type/string
+                   "WCWin" :db.type/string
+                   "LgWin" :db.type/string
+                   "WSWin" :db.type/string
+                   "R" :db.type/int
+                   "AB" :db.type/int
+                   "H" :db.type/int
+                   "2B" :db.type/int
+                   "3B" :db.type/int
+                   "HR" :db.type/int
+                   "BB" :db.type/int
+                   "SO" :db.type/int
+                   "SB" :db.type/int
+                   "CS" :db.type/int
+                   "HBP" :db.type/int
+                   "SF" :db.type/int
+                   "RA" :db.type/int
+                   "ER" :db.type/int
+                   "ERA" :db.type/float
+                   "CG" :db.type/int
+                   "SHO" :db.type/int
+                   "SV" :db.type/int
+                   "IPouts" :db.type/int
+                   "HA" :db.type/int
+                   "HRA" :db.type/
+                   "BBA" :db.type/int
+                   "SOA" :db.type/int
+                   "E" :db.type/int
+                   "DP" :db.type/int
+                   "FP" :db.type/float
+                   "name" :db.type/string
+                   "park" :db.type/string
+                   "attendance" :db.type/int
+                   "BPF" :db.type/int
+                   "PPF" :db.type/int
+                   "teamIDBR" :db.type/string
+                   "teamIDlahman45" :db.type/string
+                   "teamIDretro" :db.type/string
                    }]
             (zipmap (map lahman-keywordify (keys m)) (vals m))))
 
