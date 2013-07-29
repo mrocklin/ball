@@ -12,7 +12,8 @@
 (defn parse-int [s]
   (cond 
     (instance? Number s) s
-    (instance? String s) (. Integer parseInt s)))
+    (instance? String s) (. Integer parseInt s)
+    :else (throw (Exception. "Expected Number or String"))))
 
 (defn date-of [year month day]
   (->> [year month day]
