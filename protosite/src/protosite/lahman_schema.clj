@@ -107,6 +107,37 @@
                    "teamIDBR" :db.type/string
                    "teamIDlahman45" :db.type/string
                    "teamIDretro" :db.type/string
+                   ; Pitching
+                   "playerID" :db.type/string
+                   "yearID" :db.type/int
+                   "stint" :db.type/int
+                   "teamID" :db.type/string
+                   "lgID" :db.type/string
+                   "W" :db.type/int
+                   "L" :db.type/int
+                   "G" :db.type/int
+                   "GS" :db.type/int
+                   "CG" :db.type/int
+                   "SHO" :db.type/int
+                   "SV" :db.type/int
+                   "IPouts" :db.type/int
+                   "H" :db.type/int
+                   "ER" :db.type/int
+                   "HR" :db.type/int
+                   "BB" :db.type/int
+                   "SO" :db.type/int
+                   "BAOpp" :db.type/int
+                   "ERA" :db.type/int
+                   "IBB" :db.type/int
+                   "WP" :db.type/int
+                   "HBP" :db.type/int
+                   "BK" :db.type/int
+                   "BFP" :db.type/int
+                   "GF" :db.type/int
+                   "R" :db.type/int
+                   "SH" :db.type/int
+                   "SF" :db.type/int
+                   "GIDP" :db.type/int
                    }]
             (zipmap (map lahman-keywordify (keys m)) (vals m))))
 
