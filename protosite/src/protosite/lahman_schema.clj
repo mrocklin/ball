@@ -32,7 +32,31 @@
                    "lahman45ID" :db.type/string
                    "retroID" :db.type/string
                    "holtzID" :db.type/string
-                   "bbrefID" :db.type/string}]
+                   "bbrefID" :db.type/string
+                   "yearID" :db.type/int
+                   "stint" :db.type/int
+                   "teamID" :db.type/string
+                   "lgID" :db.type/string
+                   "G" :db.type/int
+                   "G_batting" :db.type/int
+                   "AB" :db.type/int
+                   "R" :db.type/int
+                   "H" :db.type/int
+                   "2B" :db.type/int
+                   "3B" :db.type/int
+                   "HR" :db.type/int
+                   "RBI" :db.type/int
+                   "SB" :db.type/int
+                   "CS" :db.type/int
+                   "BB" :db.type/int
+                   "SO" :db.type/int
+                   "IBB" :db.type/int
+                   "HBP" :db.type/int
+                   "SH" :db.type/int
+                   "SF" :db.type/int
+                   "GIDP" :db.type/int
+                   "G_old" :db.type/int
+                   }]
             (zipmap (map lahman-keywordify (keys m)) (vals m))))
 
     ;:db/unique :db.unique/identity
