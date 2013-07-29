@@ -1,6 +1,7 @@
 (ns protosite.lahman-parse
   (:require [clojure.data.csv :as csv])
-  (:require [clojure.java.io :as io]))
+  (:require [clojure.java.io :as io])
+  (:require [protosite.lahman-schema :refer [types]]))
 
 (def text (-> "resources/lahman2012/Master.csv"
               io/reader
@@ -24,19 +25,39 @@
 (defn lahman-keywordify [k]
   (keyword (str "lahman/" k)))
 
-(def int-fields #{"lahmanID" "height" "weight"})
-(def del-fields #{"birthYear" "birthMonth" "birthDay" "deathYear" "deathMonth" "deathDay"})
+
+(defn replace-ymd-with-date [name m]
+  (let [[year month day] (map (partial str "birth") ["Year" "Month" "Day"])]
+    (if (every? identity (map (partial get m) [year month day]))
+      (-> m
+         (assoc "birth" (apply date-of (map m [year month day])))
+         (dissoc year month day))
+      m)))
+
+(defn replace-string-with-date [name m]
+  (if (empty? (m name))
+    m
+    (assoc m name (date-of-str (m name)))))
+
+(defn replace-ints [m]
+  (let [f (fn [k v] 
+            (if (and (= (get types k) :db.type/long)
+                     (not (empty? v))) 
+              (parse-int v) v))]
+  (into {} (for [[k v] m] [k (f k v)]))))
+
+(defn keywordify-map [m]
+  (zipmap (->> m keys (map lahman-keywordify)) (vals m)))
+
+
 (defn map-to-fact [m]
-  (let [birth (let [[y m d] (map m ["birthYear" "birthMonth" "birthDay"])]
-                (if (some empty? [y m d]) nil (date-of y m d)))
-        death (let [[y m d] (map m ["deathYear" "deathMonth" "deathDay"])]
-                (if (some empty? [y m d]) nil (date-of y m d)))
-        debut (let [d (m "debut")] (if (empty? d) nil (date-of-str (m "debut"))))
-        final (let [d (m "finalGame")] (if (empty? d) nil (date-of-str (m "finalGame"))))
-        with-new (assoc m "birth" birth "death" death "debut" debut "finalGame" final)
-        without-old (apply dissoc with-new del-fields)]
-    (apply hash-map (flatten (for [[k v] without-old]
-              [(lahman-keywordify k) (if (and (contains? int-fields k) (not (empty? v))) (parse-int v) v)])))))
+  (->> m 
+    (replace-string-with-date "debut")
+    (replace-string-with-date "finalGame")
+    (replace-ymd-with-date "birth")
+    (replace-ymd-with-date "death")
+    replace-ints
+    keywordify-map))
 
 (def player-facts (map map-to-fact maps))
 

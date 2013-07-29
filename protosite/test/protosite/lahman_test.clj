@@ -17,3 +17,20 @@
 (fact "date-of-str produces times"
       (type (date-of-str "09/30/2001")) => java.util.Date)
 
+(fact "replace-ymd-with-date works"
+      (replace-ymd-with-date "birth" {"birthYear" 2000 "birthMonth" 01 "birthDay" 05 :key :value}) 
+      => {"birth" (date-of 2000 1 5) :key :value})
+
+(fact "replace-string-with-date works"
+      (replace-string-with-date "birth" {"birth" "01/05/2000" :key :value}) 
+      => {"birth" (date-of 2000 1 5) :key :value})
+
+(fact "map-to-fact works"
+      (map-to-fact {"playerID" "joe" "bats" "L" "AB" "100"})
+      => {:lahman/playerID "joe" :lahman/bats "L" :lahman/AB 100})
+
+(fact "replace-ints works"
+      (replace-ints {"ABCD" "B" "AB" "100"}) => {"ABCD" "B" "AB" 100})
+
+(fact "keywordify-map works"
+      (keywordify-map {"A" "B"}) => {:lahman/A "B"})
