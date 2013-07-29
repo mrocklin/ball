@@ -6,7 +6,8 @@
 (fact "parse-int parses ints robustly"
       (parse-int 5) => 5
       (parse-int "05") => 5
-      (parse-int "5") => 5)
+      (parse-int "5") => 5
+      (parse-int 5.252) => (throws Exception))
 
 (fact "date-of produces times for a variety of inputs"
       (type (date-of 1939 8 5)) => java.util.Date
