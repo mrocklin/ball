@@ -2,8 +2,9 @@
   (:require [clojure.data.csv :as csv])
   (:require [clojure.java.io :as io]))
 
-(def text (with-open [in-file (io/reader "resources/lahman2012/Master.csv")]
-              (doall (csv/read-csv in-file))))
+(def text (-> "resources/lahman2012/Master.csv"
+              io/reader
+              csv/read-csv))
 
 (def maps (let [[header & data] text]
             (for [line data] (zipmap header line))))
