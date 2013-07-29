@@ -114,7 +114,8 @@
     ;:db/index true
     ;:db/doc "The Hash of a commit - Unique 40 character string"
 
-(def unique-keys #{:lahman.lahmanID :lahman.playerID})
+(def index-keys #{:lahman.lahmanID :lahman.playerID})
+(def unique-keys #{})
 
 (def schema (for [[ident typ] idents]
                    {:db/id #db/id[:db.part/db]
@@ -122,4 +123,5 @@
                     :db/valueType typ
                     :db/cardinality :db.cardinality/one
                     :db/unique (contains? unique-keys ident)
+                    :db/index (contains? index-keys ident)
                     :db.install/_attribute :db.part/db}))
