@@ -7,6 +7,8 @@ file { '/etc/motd': content => "Fantasy Baseball In A Box\n" }
 package { 'default-jre': ensure => installed }
 package { 'unzip': ensure => installed }
 package { 'upstart': ensure => installed }
+package { 'leiningen': ensure => installed }
+package { 'git-core': ensure => installed }
 
 # Leiningen / Clojure
 
@@ -20,16 +22,15 @@ file { "leiningen/create-local-bin-folder":
   mode => '755',
 }
 
+
 $lein_url = "https://github.com/technomancy/leiningen/raw/stable/bin/lein"
 
-exec { "leiningen/install-script":
-  user => $user,
+
+file { "/home/$user/.lein":
+  ensure => directory,
+  path => "/home/$user/.lein",
+  owner => $user,
   group => $user,
-  path => ["/bin", "/usr/bin", "/usr/local/bin"],
-  cwd => "/home/$user/bin",
-  command => "wget ${lein_url} && chmod 755 lein",
-  creates => ["/home/$user/bin/lein",
-              "/home/$user/.lein"],
 }
 
 
