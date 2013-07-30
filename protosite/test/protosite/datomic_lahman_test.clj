@@ -25,17 +25,29 @@
           (q '[:find ?player :where [?ent :lahman/playerID ?player]] (db conn))
                => #{["joe"] ["sally"]}))
 
-(def master-facts (->> "resources/lahman2012/Master-test.csv"
-                       facts-from-filename
-                       (map remove-unknown-keys)
-                       (map add-id)))
+(defn datomic-facts-from-filename [f]
+  (->> f facts-from-filename (map remove-unknown-keys) (map add-id)))
 
-(fact "Master dataset parses and is queryable"
+(def master-facts
+  (datomic-facts-from-filename "resources/lahman2012/Master-test.csv"))
+(def batting-facts
+  (datomic-facts-from-filename "resources/lahman2012/Batting-test.csv"))
+
+(fact "Lahman dataset parses and is queryable"
       (with-connection conn
         (d/transact conn schema)
         (d/transact conn master-facts)
+        (d/transact conn batting-facts)
         ; Dayrl Strawberry was born in Los Angeles
         (q '[:find ?city :where [?x :lahman/playerID "strawda01"]
                                 [?x :lahman/birthCity ?city]] (db conn))
                        => #{["Los Angeles"]}
+        (q '[:find ?team :where [?x :lahman/playerID "strawda01"]
+                                [?x :lahman/teamID   ?team]] (db conn))
+                       => #{["NYN"] ["LAN"] ["SFN"] ["NYA"]}
+        (q '[:find ?team :where [?x :lahman/playerID ?player]
+                                [?y :lahman/playerID ?player]
+                                [?x :lahman/birthCity "Los Angeles"]
+                                [?y :lahman/teamID   ?team]] (db conn))
+                       => #{["NYN"] ["LAN"] ["SFN"] ["NYA"]}
       ))
