@@ -7,14 +7,14 @@ file { '/etc/motd': content => "Fantasy Baseball In A Box\n" }
 package { 'default-jre': ensure => installed }
 package { 'unzip': ensure => installed }
 package { 'upstart': ensure => installed }
+package { 'git-core': ensure => installed }
 
-# Leiningen / Clojure
+# Leiningen / Clojure:
 
 $user = 'vagrant'
 
-file { "leiningen/create-local-bin-folder":
+file { "/home/$user/bin":
   ensure => directory,
-  path => "/home/$user/bin",
   owner => $user,
   group => $user,
   mode => '755',
@@ -22,14 +22,12 @@ file { "leiningen/create-local-bin-folder":
 
 $lein_url = "https://github.com/technomancy/leiningen/raw/stable/bin/lein"
 
-exec { "leiningen/install-script":
-  user => $user,
+
+file { "/home/$user/.lein":
+  ensure => directory,
+  path => "/home/$user/.lein",
+  owner => $user,
   group => $user,
-  path => ["/bin", "/usr/bin", "/usr/local/bin"],
-  cwd => "/home/$user/bin",
-  command => "wget ${lein_url} && chmod 755 lein",
-  creates => ["/home/$user/bin/lein",
-              "/home/$user/.lein"],
 }
 
 
@@ -42,6 +40,13 @@ file { "leiningen/create-plugins-dir":
   content => '{:user {:plugins [[lein-midje "3.0.0"]]}}'
 }
 
+exec { "leiningen/install-script":
+  user => $user,
+  path => ["/bin", "/usr/bin", "/usr/local/bin"],
+  cwd => "/home/$user/bin",
+  command => "wget ${lein_url} && chmod 755 lein",
+  creates => ["/home/$user/bin/lein"]
+}
 
 # Datomic stuff - see
 # http://vaughndickson.com/2012/11/20/deploying-datomic-free-on-ec2-or-any-ubuntu-system/
@@ -81,12 +86,11 @@ exec { "datomic/install-script":
               "/var/lib/datomic/runtime"]
 }
 
-exec { "datomic/config":
-  user => "datomic",
-  path => ["/bin", "/usr/bin", "/usr/local/bin"],
-  cwd => "/var/lib/datomic",
-  command => "cat > /var/lib/datomic/transactor.properties <<EOF
-########### free mode config ###############
+
+file { "/var/lib/datomic/transactor.properties":
+ owner => "datomic",
+ ensure => present,
+ content => "########### free mode config ###############
 protocol=free
 #<PRIVATE IP or 127.0.0.1 if accessing from same host only>:
 host=127.0.0.1
@@ -96,13 +100,13 @@ port=4334
 ## optional overrides if you don't want ./data and ./log
 data-dir=/var/lib/datomic/data/
 log-dir=/var/log/datomic/
-EOF",
-  creates => ["/var/lib/datomic/transactor.properties"]
+"
 }
 
 
 file { "/etc/init/datomic.conf":
   owner => "root",
+  ensure => present,
   content => "start on runlevel [2345]
  
 pre-start script
@@ -133,5 +137,6 @@ service { "datomic":
   enable => true,
   ensure => running,
   provider => 'upstart',
-  require => File['/etc/init/datomic.conf'],
+  require => File['/etc/init/datomic.conf',
+                  '/var/lib/datomic/transactor.properties'],
 }
