@@ -56,8 +56,8 @@ Vagrant::Config.run do |config|
   #
 
   # JJ: http://stackoverflow.com/questions/16011294/vagrant-puppet-provisioning-failing
-  config.vm.provision :shell, :inline => "apt-get update -q --fix-missing"
-  config.vm.provision :shell, :inline => "apt-get install -q -y puppet"
+  config.vm.provision :shell, :inline => "apt-get update -qq --fix-missing"
+  config.vm.provision :shell, :inline => "apt-get install -qq -y puppet"
   config.vm.provision :puppet do |puppet|
   puppet.manifests_path = "manifests"
    puppet.options = "--verbose --debug"

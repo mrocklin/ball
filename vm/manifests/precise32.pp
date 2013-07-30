@@ -7,21 +7,18 @@ file { '/etc/motd': content => "Fantasy Baseball In A Box\n" }
 package { 'default-jre': ensure => installed }
 package { 'unzip': ensure => installed }
 package { 'upstart': ensure => installed }
-package { 'leiningen': ensure => installed }
 package { 'git-core': ensure => installed }
 
-# Leiningen / Clojure
+# Leiningen / Clojure:
 
 $user = 'vagrant'
 
-file { "leiningen/create-local-bin-folder":
+file { "/home/$user/bin":
   ensure => directory,
-  path => "/home/$user/bin",
   owner => $user,
   group => $user,
   mode => '755',
 }
-
 
 $lein_url = "https://github.com/technomancy/leiningen/raw/stable/bin/lein"
 
@@ -43,6 +40,13 @@ file { "leiningen/create-plugins-dir":
   content => '{:user {:plugins [[lein-midje "3.0.0"]]}}'
 }
 
+exec { "leiningen/install-script":
+  user => $user,
+  path => ["/bin", "/usr/bin", "/usr/local/bin"],
+  cwd => "/home/$user/bin",
+  command => "wget ${lein_url} && chmod 755 lein",
+  creates => ["/home/$user/bin/lein"]
+}
 
 # Datomic stuff - see
 # http://vaughndickson.com/2012/11/20/deploying-datomic-free-on-ec2-or-any-ubuntu-system/
