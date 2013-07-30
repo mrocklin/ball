@@ -34,3 +34,13 @@
 
 (fact "keywordify-map works"
       (keywordify-map {"A" "B"}) => {:lahman/A "B"})
+
+(fact "remove-empty-items works"
+       (remove-empty-items {1 "" 2 "two"}) => {2 "two"})
+
+(def master-facts (facts-from-filename "resources/lahman2012/Master.csv"))
+
+(facts "deathday/month/year and birth/day/month/year do not occur in master facts"
+      (not-any? #(contains? % "birthDay") master-facts) => true
+      (not-any? #(contains? % "deathDay") master-facts) => true)
+

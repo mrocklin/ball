@@ -3,12 +3,9 @@
   (:require [clojure.java.io :as io])
   (:require [protosite.lahman-schema :refer [types]]))
 
-(def text (-> "resources/lahman2012/Master.csv"
-              io/reader
-              csv/read-csv))
-
-(def maps (let [[header & data] text]
-            (for [line data] (zipmap header line))))
+(defn maps-from-text [text]
+  (let [[header & data] text]
+    (for [line data] (zipmap header line))))
 
 (defn parse-int [expr] (Integer/parseInt (str expr)))
 
@@ -27,10 +24,10 @@
 
 
 (defn replace-ymd-with-date [name m]
-  (let [[year month day] (map (partial str "birth") ["Year" "Month" "Day"])]
+  (let [[year month day] (map (partial str name) ["Year" "Month" "Day"])]
     (if (every? identity (map (partial get m) [year month day]))
       (-> m
-         (assoc "birth" (apply date-of (map m [year month day])))
+         (assoc name (apply date-of (map m [year month day])))
          (dissoc year month day))
       m)))
 
@@ -49,9 +46,15 @@
 (defn keywordify-map [m]
   (zipmap (->> m keys (map lahman-keywordify)) (vals m)))
 
+(defn remove-empty-items [m]
+  (let [good-keys (remove (comp empty? m) (keys m))
+        good-vals (map m good-keys)]
+    (zipmap good-keys good-vals)))
+
 
 (defn map-to-fact [m]
   (->> m 
+    remove-empty-items
     (replace-string-with-date "debut")
     (replace-string-with-date "finalGame")
     (replace-ymd-with-date "birth")
@@ -59,6 +62,9 @@
     replace-ints
     keywordify-map))
 
-(def player-facts (map map-to-fact maps))
-
-; (eq (count player-facts) (count maps))
+(defn facts-from-filename [f]
+  (->> f
+    io/reader
+    csv/read-csv
+    maps-from-text
+    (map map-to-fact)))

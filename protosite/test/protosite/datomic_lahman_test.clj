@@ -8,6 +8,11 @@
 (defn add-id [m] 
   (assoc m :db/id (d/tempid :db.part/user)))
 
+(def known-keys (apply hash-set (map #(->> % (str "lahman/") keyword) (keys types))))
+
+(defn remove-unknown-keys [m]
+    (apply dissoc m (remove #(contains? known-keys %) (keys m))))
+
 (fact "Database handles basic queries"
        (with-connection conn
           (d/transact conn schema)
@@ -19,3 +24,14 @@
                => #{[5]}
           (q '[:find ?player :where [?ent :lahman/playerID ?player]] (db conn))
                => #{["joe"] ["sally"]}))
+
+(def master-facts (->> "resources/lahman2012/Master.csv"
+                       facts-from-filename
+                       (map remove-unknown-keys)
+                       (map add-id)))
+
+(fact "Master dataset parses"
+      (with-connection conn
+        (d/transact conn schema)
+        (d/transact conn master-facts)
+      )
