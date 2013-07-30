@@ -82,12 +82,11 @@ exec { "datomic/install-script":
               "/var/lib/datomic/runtime"]
 }
 
-exec { "datomic/config":
-  user => "datomic",
-  path => ["/bin", "/usr/bin", "/usr/local/bin"],
-  cwd => "/var/lib/datomic",
-  command => "cat > /var/lib/datomic/transactor.properties <<EOF
-########### free mode config ###############
+
+file { "/var/lib/datomic/transactor.properties":
+ owner => "datomic",
+ ensure => present,
+ content => "########### free mode config ###############
 protocol=free
 #<PRIVATE IP or 127.0.0.1 if accessing from same host only>:
 host=127.0.0.1
@@ -97,13 +96,13 @@ port=4334
 ## optional overrides if you don't want ./data and ./log
 data-dir=/var/lib/datomic/data/
 log-dir=/var/log/datomic/
-EOF",
-  creates => ["/var/lib/datomic/transactor.properties"]
+"
 }
 
 
 file { "/etc/init/datomic.conf":
   owner => "root",
+  ensure => present,
   content => "start on runlevel [2345]
  
 pre-start script
@@ -134,5 +133,6 @@ service { "datomic":
   enable => true,
   ensure => running,
   provider => 'upstart',
-  require => File['/etc/init/datomic.conf'],
+  require => File['/etc/init/datomic.conf',
+                  '/var/lib/datomic/transactor.properties'],
 }
