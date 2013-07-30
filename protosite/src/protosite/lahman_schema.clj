@@ -1,8 +1,6 @@
 (ns protosite.lahman-schema
   (:require [datomic.api :only [db] :as d]))
 
-(defn lahman-keywordify [k] (keyword (str "lahman/" k)))
-
 (def types
          (->> ["lahmanID" :db.type/long
                "playerID" :db.type/string
@@ -140,13 +138,11 @@
                "GIDP" :db.type/long
                ] (partition 2) distinct flatten (apply hash-map)))
 
-(def idents (zipmap (map lahman-keywordify (keys types)) (vals types)))
+(def index-keys #{"lahmanID" "playerID"})
 
-(def index-keys #{:lahman/lahmanID :lahman/playerID})
-
-(def schema (for [[ident typ] idents]
-                   {:db/id #db/id[:db.part/db]
-                    :db/ident ident
+(def schema (for [[ident typ] types]
+                   {:db/id (d/tempid :db.part/db)
+                    :db/ident (keyword (str "lahman/" ident))
                     :db/valueType typ
                     :db/cardinality :db.cardinality/one
                     :db/index (contains? index-keys ident)
