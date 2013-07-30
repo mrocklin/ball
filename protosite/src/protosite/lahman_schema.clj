@@ -1,8 +1,8 @@
 (ns protosite.lahman-schema
   (:require [datomic.api :only [db] :as d]))
 
-(def types
-         (->> ["lahmanID" :db.type/long
+(def master-types
+              {"ahmanID" :db.type/long
                "playerID" :db.type/string
                "managerID" :db.type/string
                "hofID" :db.type/string
@@ -30,9 +30,9 @@
                "lahman45ID" :db.type/string
                "retroID" :db.type/string
                "holtzID" :db.type/string
-               "bbrefID" :db.type/string
-               ; Batting
-               "playerID" :db.type/string
+               "bbrefID" :db.type/string})
+(def batting-types
+              {"playerID" :db.type/string
                "yearID" :db.type/long
                "stint" :db.type/long
                "teamID" :db.type/string
@@ -55,9 +55,9 @@
                "SH" :db.type/long
                "SF" :db.type/long
                "GIDP" :db.type/long
-               "G_old" :db.type/long
-               ;Team
-               "yearID" :db.type/long
+               "G_old" :db.type/long})
+(def team-types
+              {"yearID" :db.type/long
                "lgID" :db.type/string
                "teamID" :db.type/string
                "franchID" :db.type/string
@@ -104,9 +104,9 @@
                "PPF" :db.type/long
                "teamIDBR" :db.type/string
                "teamIDlahman45" :db.type/string
-               "teamIDretro" :db.type/string
-               ; Pitching
-               "playerID" :db.type/string
+               "teamIDretro" :db.type/string})
+(def pitching-types
+              {"playerID" :db.type/string
                "yearID" :db.type/long
                "stint" :db.type/long
                "teamID" :db.type/string
@@ -135,8 +135,9 @@
                "R" :db.type/long
                "SH" :db.type/long
                "SF" :db.type/long
-               "GIDP" :db.type/long
-               ] (partition 2) distinct flatten (apply hash-map)))
+               "GIDP" :db.type/long})
+
+(def types (merge master-types batting-types team-types pitching-types))
 
 (def index-keys #{"lahmanID" "playerID"})
 
