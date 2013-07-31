@@ -1,17 +1,10 @@
 (ns protosite.datomic-lahman-test
   (:require [midje.sweet :refer :all]
             [protosite.datomic-test :refer :all]
+            [protosite.lahman-datomic :refer :all]
             [protosite.lahman-schema :refer :all]
             [protosite.lahman-parse :refer :all])
   (:use [datomic.api :only [db q] :as d]))
-
-(defn add-id [m] 
-  (assoc m :db/id (d/tempid :db.part/user)))
-
-(def known-keys (apply hash-set (map #(->> % (str "lahman/") keyword) (keys types))))
-
-(defn remove-unknown-keys [m]
-    (apply dissoc m (remove #(contains? known-keys %) (keys m))))
 
 (fact "Database handles basic queries"
        (with-connection conn
@@ -25,11 +18,9 @@
           (q '[:find ?player :where [?ent :lahman/playerID ?player]] (db conn))
                => #{["joe"] ["sally"]}))
 
-(defn datomic-facts-from-filename [f]
-  (->> f facts-from-filename (map remove-unknown-keys) (map add-id)))
-
 (def master-facts
   (datomic-facts-from-filename "resources/lahman2012/Master-test.csv"))
+
 (def batting-facts
   (datomic-facts-from-filename "resources/lahman2012/Batting-test.csv"))
 
