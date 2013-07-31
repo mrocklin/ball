@@ -11,16 +11,14 @@
                 (map datomic-facts-from-filename)
                 flatten))
 
-(def db-uri "datomic:free://localhost:4337/lahman")
+(def db-uri "datomic:free://localhost:4334/lahman")
 
 (defn populate [uri]
   (if (d/create-database uri)
     (try (let [conn (d/connect uri)]
            (d/transact conn schema)
-           (print "Schema Added")
            (doseq [fact facts]
              (d/transact conn [fact])))
-           (print "Data Added")
     (catch Exception e (d/delete-database uri)))
     (println "Database already up")))
 
