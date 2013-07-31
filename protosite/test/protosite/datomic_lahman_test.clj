@@ -38,13 +38,15 @@
         (d/transact conn schema)
         (d/transact conn master-facts)
         (d/transact conn batting-facts)
-        ; Dayrl Strawberry was born in Los Angeles
+        ; Dayrrl Strawberry was born in Los Angeles
         (q '[:find ?city :where [?x :lahman/playerID "strawda01"]
                                 [?x :lahman/birthCity ?city]] (db conn))
                        => #{["Los Angeles"]}
+        ; With what teams did Dayrrl play? 
         (q '[:find ?team :where [?x :lahman/playerID "strawda01"]
                                 [?x :lahman/teamID   ?team]] (db conn))
                        => #{["NYN"] ["LAN"] ["SFN"] ["NYA"]}
+        ; With what teams did people who were born in Los Angeles play?
         (q '[:find ?team :where [?x :lahman/playerID ?player]
                                 [?y :lahman/playerID ?player]
                                 [?x :lahman/birthCity "Los Angeles"]
