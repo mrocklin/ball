@@ -139,7 +139,7 @@
 
 (def types (merge master-types batting-types team-types pitching-types))
 
-(def index-keys #{"lahmanID" "playerID"})
+(def index-keys #{"lahmanID" "playerID" "teamID" "yearID"})
 
 (def schema (for [[ident typ] types]
                    {:db/id (d/tempid :db.part/db)
