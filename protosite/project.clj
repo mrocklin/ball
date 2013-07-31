@@ -1,7 +1,7 @@
 (defproject protosite "0.1.0-SNAPSHOT"
   :description "Fantasy Baseball Prototype Site"
   :url nil
-  :aot [protosite.example]
+  :aot [protosite.example protosite.lahman-load]
   :profiles {:dev {:dependencies [[midje "1.5.0"]
                                   [ring-mock "0.1.5"]]}}
   :license {:name "Not open source"}
