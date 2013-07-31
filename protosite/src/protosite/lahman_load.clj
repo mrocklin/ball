@@ -17,9 +17,12 @@
   (if (d/create-database uri)
     (let [conn (d/connect uri)]
            (d/transact conn schema)
+           (println "Added Schema")
            (doseq [fact facts]
              (d/transact conn [fact]))
-           (d/request-index conn))
+           (println (format "Added %d facts" (count facts)))
+           (d/request-index conn)
+           (println "Requesting index"))
     (println "Database already up")))
 
 (defn -main []
