@@ -18,7 +18,8 @@
     (try (let [conn (d/connect uri)]
            (d/transact conn schema)
            (doseq [fact facts]
-             (d/transact conn [fact])))
+             (d/transact conn [fact]))
+           (d/request-index conn))
     (catch Exception e (d/delete-database uri)))
     (println "Database already up")))
 
