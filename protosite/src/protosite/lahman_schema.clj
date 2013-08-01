@@ -145,6 +145,7 @@
                    {:db/id (d/tempid :db.part/db)
                     :db/ident (keyword (str "lahman/" ident))
                     :db/valueType typ
+                    :db/doc ident
                     :db/cardinality :db.cardinality/one
                     :db/index (contains? index-keys ident)
                     :db.install/_attribute :db.part/db}))
