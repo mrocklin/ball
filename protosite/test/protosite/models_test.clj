@@ -20,9 +20,8 @@
         (d/transact conn schema)
         (d/transact conn master-facts)
         (d/transact conn batting-facts)
-        (team-record conn "NYN" [1989 1990]) => 
-          #{["strawda01" 1990 152 542 92 150 18 1 37 108 70]
-            ["strawda01" 1989 134 476 69 107 26 1 29 77 61]
-            ["carrema01" 1990 82 188 30 47 12 0 10 26 15]
-            ["carrema01" 1989 68 133 20 41 6 0 6 16 12]}
+        (team-record conn "NYN" 1990) => 
+          #{["carrema01" 1990 82 188 30 47 12 0 10 26 15]
+            ["strawda01" 1990 152 542 92 150 18 1 37 108 70]}
+            
       ))

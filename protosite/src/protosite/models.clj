@@ -8,17 +8,21 @@
 
 (defn lvar [s] (symbol (str "?" s)))
 
+(def conn (d/connect db-uri))
 
-(defn team-record [conn teamID years]
+(defn team-record [conn teamID year]
   (let [attrs batting-attrs
         x (lvar "x")
         valnames (map lvar attrs)
         keyword-attrs (map keywordify attrs)
         where-clauses (map #(vector x %1 %2) keyword-attrs valnames)]
     (q {:find valnames
-        :in '[$ [?year ...]]
         :where (concat [[x :lahman/teamID teamID]
-                        [x :lahman/yearID '?year]]
+                        [x :lahman/yearID year]]
                        where-clauses)}
                   
-         (db conn) years)))
+         (db conn) )
+      
+      ))
+
+(def c-team-record (partial team-record conn))
