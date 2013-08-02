@@ -26,4 +26,6 @@
     (println "Database already up")))
 
 (defn -main []
-  (populate db-uri))
+  (populate db-uri)
+  (println "left populate")
+  (shutdown-agents))
