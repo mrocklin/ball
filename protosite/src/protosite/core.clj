@@ -14,3 +14,7 @@
 
 
 ;(run-jetty handler {:port 3000})
+
+(defn -main []
+  (println "Server Started")
+  (run-jetty app {:port 3000}))
