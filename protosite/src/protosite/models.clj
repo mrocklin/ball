@@ -5,7 +5,6 @@
 (def batting-attrs ["playerID" "yearID" "G" "AB" "R" "H" "2B" "3B" "HR" "RBI" "BB"])
 
 (defn keywordify [s] (->> s (str "lahman/") keyword)) 
-(defn symbolify  [s] (->> s (str "?") symbol)) 
 
 (defn lvar [s] (symbol (str "?" s)))
 
