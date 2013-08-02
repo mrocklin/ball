@@ -2,6 +2,7 @@
   :description "Fantasy Baseball Prototype Site"
   :url nil
   :aot [protosite.example protosite.lahman-load protosite.lahman-delete]
+  ;:main protosite.core
   :profiles {:dev {:dependencies [[midje "1.5.0"]
                                   [ring-mock "0.1.5"]]}}
   :license {:name "Not open source"}
