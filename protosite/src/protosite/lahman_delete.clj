@@ -1,8 +1,7 @@
 (ns protosite.lahman-delete
+  (:require [protosite.lahman-datomic :refer [db-uri]])
   (:use [datomic.api :only [db q] :as d])
   (:gen-class))
-
-(def db-uri "datomic:free://localhost:4334/lahman")
 
 (defn -main []
   (d/delete-database db-uri))

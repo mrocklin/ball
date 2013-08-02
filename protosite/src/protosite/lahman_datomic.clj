@@ -13,3 +13,5 @@
 
 (defn datomic-facts-from-filename [f]
   (->> f facts-from-filename (map remove-unknown-keys) (map add-id)))
+
+(def db-uri "datomic:free://localhost:4334/lahman")

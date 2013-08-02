@@ -11,8 +11,6 @@
                 (map datomic-facts-from-filename)
                 flatten))
 
-(def db-uri "datomic:free://localhost:4334/lahman")
-
 (defn populate [uri]
   (if (d/create-database uri)
     (let [conn (d/connect uri)]
