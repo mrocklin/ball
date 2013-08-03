@@ -1,5 +1,6 @@
 (ns protosite.models
-  (:require [protosite.lahman-datomic :refer :all])
+  (:require [protosite.lahman-datomic :refer :all]
+            [clojure.data.json :as json])
   (:use [datomic.api :only [db q] :as d]))
 
 (def batting-attrs ["playerID" "yearID" "G" "AB" "R" "H" "2B" "3B" "HR" "RBI" "BB"])
@@ -10,19 +11,28 @@
 
 (def conn (d/connect db-uri))
 
+(defn mapify [x] {"aaData" x})
+
+(defn ready-for-data-tables [grid]
+  (->> grid
+    (map #(map str %))
+    mapify
+    json/write-str))
+
 (defn team-record [conn teamID year]
   (let [attrs batting-attrs
         x (lvar "x")
         valnames (map lvar attrs)
         keyword-attrs (map keywordify attrs)
         where-clauses (map #(vector x %1 %2) keyword-attrs valnames)]
-    (q {:find valnames
+    (->>
+      (q {:find valnames
         :where (concat [[x :lahman/teamID teamID]
                         [x :lahman/yearID year]]
                        where-clauses)}
                   
          (db conn) )
-      
-      ))
+      (sort-by first)
+      )))
 
 (def c-team-record (partial team-record conn))
