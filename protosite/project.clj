@@ -8,6 +8,7 @@
   :license {:name "Not open source"}
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/data.csv "0.1.2"]
+                 [org.clojure/data.json "0.2.2"]
                  [compojure "1.1.5"]
                  [ring "1.2.0"]
                  [com.datomic/datomic-free "0.8.4020.24"]
