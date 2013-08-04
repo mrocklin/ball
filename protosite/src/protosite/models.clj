@@ -9,8 +9,6 @@
 
 (defn lvar [s] (symbol (str "?" s)))
 
-(def conn (d/connect db-uri))
-
 (defn mapify [x] {"aaData" x})
 
 (defn ready-for-data-tables [grid]
@@ -32,7 +30,4 @@
                        where-clauses)}
                   
          (db conn) )
-      (sort-by first)
-      )))
-
-(def c-team-record (partial team-record conn))
+      (sort-by first))))
