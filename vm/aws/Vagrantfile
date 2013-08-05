@@ -20,9 +20,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #aws.ami = "ami-7747d01e"
     #aws.ami = "ami-aa941e9a"
     aws.ami = "ami-70f96e40"
-    aws.type = "m1.medium"  # Not working for some reason... still get m1.small...
+    aws.instance_type = "m1.medium"  
     aws.security_groups = [ 'quick-start-1' ]
-
+    aws.tags = {
+      'Name' => 'qball'
+    }
     override.ssh.username = "ubuntu"  # AWS wants this
     override.ssh.private_key_path = ENV['HOME'] + "/.ssh/qball.pem"
   end
