@@ -10,7 +10,7 @@
 
 (defroutes app
   (GET "/" [] "<h1>Welcome to Fantasy Baseball!</h1>")
-  (GET ["/team/:team/:year" :team #"\w{3}" :year #"\d{4}"] [team year]
+  (GET ["/team/:team/:year/" :team #"\w{3}" :year #"\d{4}"] [team year]
          (ready-for-data-tables (team-record  (d/connect db-uri)
                                              team (Integer/parseInt year))))
   (route/resources "/")
