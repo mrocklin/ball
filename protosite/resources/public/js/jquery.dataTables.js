@@ -8749,7 +8749,7 @@
 					fnCallback( json );
 				},
 				"dataType": "json",
-				"cache": false,
+				"cache": true,
 				"type": oSettings.sServerMethod,
 				"error": function (xhr, error, thrown) {
 					if ( error == "parsererror" ) {
