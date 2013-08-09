@@ -22,8 +22,8 @@
         (d/transact conn master-facts)
         (d/transact conn batting-facts)
         (team-record conn "NYN" 1990) => 
-             [["carrema01" 1990 82 188 30 47 12 0 10 26 15]
-              ["strawda01" 1990 152 542 92 150 18 1 37 108 70]])
+             [["Mark" "Carreon" 82 188 30 47 12 0 10 26 15]
+              ["Daryll" "Strawberry" 152 542 92 150 18 1 37 108 70]])
       )
 
 (facts "ready-for-data-tables makes ideal output"
