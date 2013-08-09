@@ -16,7 +16,7 @@ $( document ).ready( function() {
 					if ( json.sError ) {
 						oSettings.oApi._fnLog( oSettings, 0, json.sError );
 					}
-					
+
 					$(oSettings.oInstance).trigger('xhr', [oSettings, json]);
 					fnCallback( json );
 				},
@@ -41,11 +41,18 @@ $( document ).ready( function() {
     }
 
     $("#year").bind('keypress', function(e) {
-        var val = $("#year").val() + String.fromCharCode(e.keyCode);
-        console.log(val);
-        if(val.length == 4){
-            console.log("call update");
-            updateDataTable(oTable, "NYN", val);
+        var year = $("#year").val() + String.fromCharCode(e.keyCode);
+        var team = $("#team").val();
+        if(year.length == 4){
+            updateDataTable(oTable, team, year);
+        }
+    });
+
+    $("#team").bind('keypress', function(e) {
+        var team = $("#team").val() + String.fromCharCode(e.keyCode);
+        var year = $("#year").val() ;
+        if(team.length == 3){
+            updateDataTable(oTable, team, year);
         }
     });
 });
