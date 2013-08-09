@@ -3,7 +3,7 @@
             [clojure.data.json :as json])
   (:use [datomic.api :only [db q] :as d]))
 
-(def batting-attrs ["playerID" "yearID" "G" "AB" "R" "H" "2B" "3B" "HR" "RBI" "BB"])
+(def batting-attrs ["G" "AB" "R" "H" "2B" "3B" "HR" "RBI" "BB"])
 
 (defn keywordify [s] (->> s (str "lahman/") keyword)) 
 
@@ -24,10 +24,14 @@
         keyword-attrs (map keywordify attrs)
         where-clauses (map #(vector x %1 %2) keyword-attrs valnames)]
     (->>
-      (q {:find valnames
-        :where (concat [[x :lahman/teamID teamID]
-                        [x :lahman/yearID year]]
+      (q {:find (concat '[?first ?last] valnames)
+        :where (concat '[[x :lahman/playerID ?playerID]
+                         [?y :lahman/playerID ?playerID]
+                         [?y :lahman/nameFirst ?first]
+                         [?y :lahman/nameLast ?last]
+                         [x :lahman/teamID teamID]
+                         [x :lahman/yearID year]]
                        where-clauses)}
                   
          (db conn) )
-      (sort-by first))))
+      (sort-by second))))
