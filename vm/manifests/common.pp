@@ -8,26 +8,39 @@ package { 'default-jre': ensure => installed }
 package { 'unzip': ensure => installed }
 package { 'upstart': ensure => installed }
 package { 'git-core': ensure => installed }
+package { 'tmux': ensure => installed }
 
 # Leiningen / Clojure:
 
-$user = 'vagrant'
+$user = 'vagrant'  # Fixme - make this shared somehow
+user { "$user":    # "                              "
+  ensure => present
+}
+
+file { "/home/$user":
+  ensure => directory,
+  owner => $user,
+  group => $user,
+  mode => '755',
+  require => User[$user]
+}
 
 file { "/home/$user/bin":
   ensure => directory,
   owner => $user,
   group => $user,
   mode => '755',
+  require => File["/home/$user"]
 }
 
 $lein_url = "https://github.com/technomancy/leiningen/raw/stable/bin/lein"
-
 
 file { "/home/$user/.lein":
   ensure => directory,
   path => "/home/$user/.lein",
   owner => $user,
   group => $user,
+  require => File["/home/$user/bin"]
 }
 
 
@@ -37,7 +50,8 @@ file { "leiningen/create-plugins-dir":
   owner => $user,
   group => $user,
   mode => '755',
-  content => '{:user {:plugins [[lein-midje "3.0.0"]]}}'
+  content => '{:user {:plugins [[lein-midje "3.0.0"]]}}',
+  require => User[$user]
 }
 
 exec { "leiningen/install-script":
@@ -45,6 +59,7 @@ exec { "leiningen/install-script":
   path => ["/bin", "/usr/bin", "/usr/local/bin"],
   cwd => "/home/$user/bin",
   command => "wget ${lein_url} && chmod 755 lein",
+  require => User[$user],
   creates => ["/home/$user/bin/lein"]
 }
 
@@ -55,7 +70,8 @@ file { "datomic/home":
   ensure => directory,
   path => "/var/lib/datomic",
   owner => datomic,
-  mode => '755'
+  mode => '755',
+  require => User["datomic"]
 }
  
 user { "datomic":
@@ -68,6 +84,7 @@ file { "datomic/data":
   ensure => directory,
   path => "/var/lib/datomic/data",
   owner => datomic,
+  require => User["datomic"],
   mode => '755'
 }
  
@@ -77,20 +94,10 @@ $datomic_base = "datomic-free-${datomic_version}"
 $datomic_file = "${datomic_base}.zip"
 $datomic_url = "http://downloads.datomic.com/${datomic_version}/${datomic_file}"
 
-exec { "datomic/install-script":
-  user => "datomic",
-  path => ["/bin", "/usr/bin", "/usr/local/bin"],
-  cwd => "/var/lib/datomic",
-  command => "wget ${datomic_url} && unzip -o ${datomic_file} && ln -s ${datomic_base} runtime",
-  creates => ["/var/lib/datomic/${datomic_file}",
-              "/var/lib/datomic/runtime"]
-}
-
-
 file { "/var/lib/datomic/transactor.properties":
- owner => "datomic",
- ensure => present,
- content => "########### free mode config ###############
+  owner => "datomic",
+  ensure => present,
+  content => "########### free mode config ###############
 protocol=free
 #<PRIVATE IP or 127.0.0.1 if accessing from same host only>:
 host=127.0.0.1
@@ -103,10 +110,20 @@ log-dir=/var/log/datomic/
 "
 }
 
+exec { "datomic/install-script":
+  user => "datomic",
+  path => ["/bin", "/usr/bin", "/usr/local/bin"],
+  cwd => "/var/lib/datomic",
+  require => User["datomic"],
+  command => "wget ${datomic_url} && unzip -o ${datomic_file} && ln -s ${datomic_base} runtime",
+  creates => ["/var/lib/datomic/${datomic_file}",
+              "/var/lib/datomic/runtime"]
+}
 
 file { "/etc/init/datomic.conf":
   owner => "root",
   ensure => present,
+  require => User["datomic"],
   content => "start on runlevel [2345]
  
 pre-start script
