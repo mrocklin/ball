@@ -55,5 +55,14 @@ $( document ).ready( function() {
             updateDataTable(oTable, team, year);
         }
     });
+
+    $.ajax({
+        url: "/teamids/",
+        success: function(data, aStatus, dummy){
+            $( "#team" ).autocomplete({
+                source: data
+            });},
+        dataType: "json"});
+
 });
 
