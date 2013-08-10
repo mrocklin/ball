@@ -17,6 +17,15 @@
     mapify
     json/write-str))
 
+(defn get-name-map [conn]
+  (let [results
+    (q '[:find ?playerID ?first ?last :where [?x :lahman/playerID ?playerID]
+                                             [?x :lahman/nameFirst ?first]
+                                             [?x :lahman/nameLast  ?last]]
+     (db conn))]
+    (zipmap (map first results) (map rest results))))
+
+
 (defn team-record [conn teamID year]
   (let [attrs batting-attrs
         x (lvar "x")

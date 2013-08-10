@@ -15,6 +15,12 @@
            [[1,2,3], [3,2,3]])) => #{[1] [3]}
        )
 
+(facts "get-name-map returns map of playerID to [first, last]"
+      (with-connection conn
+        (d/transact conn schema)
+        (d/transact conn master-facts)
+        ((get-name-map conn) "strawda01") => ["Darryl" "Strawberry"]))
+
 
 (facts ""
       (with-connection conn
