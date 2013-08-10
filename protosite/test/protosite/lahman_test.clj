@@ -10,9 +10,9 @@
       (parse-int 5.252) => (throws Exception))
 
 (fact "parse-float parses floats robustly"
-      (parse-float 5) => 5.0
-      (parse-float "05.01") => 5.01
-      (parse-float "5.1") => 5.1
+      (parse-float 5) => (float 5.0)
+      (parse-float "05.01") => (float 5.01)
+      (parse-float "5.1") => (float 5.1)
       (parse-float "cat") => (throws Exception))
 
 (fact "date-of produces times for a variety of inputs"
@@ -39,7 +39,7 @@
       (replace-ints {"ABCD" "B" "AB" "100"}) => {"ABCD" "B" "AB" 100})
 
 (fact "replace-floats works"
-      (replace-floats {"ABCD" "B" "ERA" "3.420000"}) => {"ABCD" "B" "ERA" 3.42})
+      (replace-floats {"ABCD" "B" "ERA" "3.420000"}) => {"ABCD" "B" "ERA" (float 3.42)})
 
 (fact "keywordify-map works"
       (keywordify-map {"A" "B"}) => {:lahman/A "B"})

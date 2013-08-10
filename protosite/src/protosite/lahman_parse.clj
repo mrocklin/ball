@@ -8,7 +8,7 @@
     (for [line data] (zipmap header line))))
 
 (defn parse-int [expr] (Integer/parseInt (str expr)))
-(defn parse-float [expr] (Double/parseDouble (str expr)))
+(defn parse-float [expr] (Float/parseFloat (str expr)))
 
 (defn date-of [year month day]
   (->> [year month day]
