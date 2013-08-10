@@ -34,7 +34,7 @@
          (slurp (:body r)) => (contains "Hi")))
 
 
-(facts "Team route includes Dayrrl's at-bats for 1990"
+(time (facts "Team route includes Dayrrl's at-bats for 1990"
        (let [r (request "/team/NYN/1990/" app)]
          (:status r) => 200
-         (:body r) => (contains "152")))
+         (:body r) => (contains "152"))))
