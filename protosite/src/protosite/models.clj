@@ -5,7 +5,7 @@
 
 (def batting-attrs ["G" "AB" "R" "H" "2B" "3B" "HR" "RBI" "BB"])
 
-(defn keywordify [s] (->> s (str "lahman/") keyword)) 
+(defn keywordify [s] (->> s (str "lahman/") keyword))
 
 (defn lvar [s] (symbol (str "?" s)))
 
@@ -25,13 +25,13 @@
         where-clauses (map #(vector x %1 %2) keyword-attrs valnames)]
     (->>
       (q {:find (concat '[?first ?last] valnames)
-        :where (concat '[[x :lahman/playerID ?playerID]
-                         [?y :lahman/playerID ?playerID]
-                         [?y :lahman/nameFirst ?first]
-                         [?y :lahman/nameLast ?last]
+        :where (concat [[x :lahman/playerID '?playerID]
                          [x :lahman/teamID teamID]
-                         [x :lahman/yearID year]]
+                         [x :lahman/yearID year]
+                         ['?y :lahman/playerID '?playerID]
+                         ['?y :lahman/nameFirst '?first]
+                         ['?y :lahman/nameLast '?last]]
                        where-clauses)}
-                  
+
          (db conn) )
       (sort-by second))))
