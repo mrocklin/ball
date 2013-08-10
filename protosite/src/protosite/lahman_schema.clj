@@ -130,7 +130,7 @@
                "BB" :db.type/long
                "SO" :db.type/long
                "BAOpp" :db.type/long
-               "ERA" :db.type/long
+               "ERA" :db.type/float
                "IBB" :db.type/long
                "WP" :db.type/long
                "HBP" :db.type/long
