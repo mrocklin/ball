@@ -9,6 +9,7 @@ package { 'unzip': ensure => installed }
 package { 'upstart': ensure => installed }
 package { 'git-core': ensure => installed }
 package { 'tmux': ensure => installed }
+package { 'curl': ensure => installed }
 
 # Leiningen / Clojure:
 
