@@ -6,7 +6,8 @@
   (:gen-class))
 
 (def filenames ["resources/lahman2012/Master.csv"
-                "resources/lahman2012/Batting.csv"])
+                "resources/lahman2012/Batting.csv"
+                "resources/lahman2012/TeamsFranchises.csv"])
 (def facts (->> filenames
                 (map datomic-facts-from-filename)
                 flatten))
