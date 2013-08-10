@@ -10,7 +10,7 @@
                 "resources/lahman2012/Batting.csv"
                 "resources/lahman2012/TeamsFranchises.csv"])
 
-(defn facts [] (->> filenames
+(defn get-facts [] (->> filenames
                     (map datomic-facts-from-filename)
                     flatten))
 
@@ -19,9 +19,10 @@
     (let [conn (d/connect uri)]
            (d/transact conn schema)
            (println "Added Schema")
-           (doseq [fact (facts)]
-             (d/transact conn [fact]))
-           (println (format "Added %d facts" (count facts)))
+           (let [facts (get-facts)]
+             (doseq [fact facts]
+               (d/transact conn [fact]))
+             (println (format "Added %d facts" (count facts))))
            (d/request-index conn)
            (println "Requesting index"))
     (println "Database already up")))
