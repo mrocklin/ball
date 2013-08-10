@@ -8,6 +8,7 @@
     (for [line data] (zipmap header line))))
 
 (defn parse-int [expr] (Integer/parseInt (str expr)))
+(defn parse-float [expr] (Double/parseDouble (str expr)))
 
 (defn date-of [year month day]
   (->> [year month day]
@@ -37,10 +38,17 @@
     (assoc m name (date-of-str (m name)))))
 
 (defn replace-ints [m]
-  (let [f (fn [k v] 
+  (let [f (fn [k v]
             (if (and (= (get types k) :db.type/long)
-                     (not (empty? v))) 
+                     (not (empty? v)))
               (parse-int v) v))]
+  (into {} (for [[k v] m] [k (f k v)]))))
+
+(defn replace-floats [m]
+  (let [f (fn [k v]
+            (if (and (= (get types k) :db.type/float)
+                     (not (empty? v)))
+              (parse-float v) v))]
   (into {} (for [[k v] m] [k (f k v)]))))
 
 (defn keywordify-map [m]
@@ -53,13 +61,14 @@
 
 
 (defn map-to-fact [m]
-  (->> m 
+  (->> m
     remove-empty-items
     (replace-string-with-date "debut")
     (replace-string-with-date "finalGame")
     (replace-ymd-with-date "birth")
     (replace-ymd-with-date "death")
     replace-ints
+    replace-floats
     keywordify-map))
 
 (defn facts-from-filename [f]

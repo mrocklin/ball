@@ -9,6 +9,12 @@
       (parse-int "5") => 5
       (parse-int 5.252) => (throws Exception))
 
+(fact "parse-float parses floats robustly"
+      (parse-float 5) => 5.0
+      (parse-float "05.01") => 5.01
+      (parse-float "5.1") => 5.1
+      (parse-float "cat") => (throws Exception))
+
 (fact "date-of produces times for a variety of inputs"
       (type (date-of 1939 8 5)) => java.util.Date
       (type (date-of "1939" "08" "05")) => java.util.Date
@@ -18,11 +24,11 @@
       (type (date-of-str "09/30/2001")) => java.util.Date)
 
 (fact "replace-ymd-with-date works"
-      (replace-ymd-with-date "birth" {"birthYear" 2000 "birthMonth" 01 "birthDay" 05 :key :value}) 
+      (replace-ymd-with-date "birth" {"birthYear" 2000 "birthMonth" 01 "birthDay" 05 :key :value})
       => {"birth" (date-of 2000 1 5) :key :value})
 
 (fact "replace-string-with-date works"
-      (replace-string-with-date "birth" {"birth" "01/05/2000" :key :value}) 
+      (replace-string-with-date "birth" {"birth" "01/05/2000" :key :value})
       => {"birth" (date-of 2000 1 5) :key :value})
 
 (fact "map-to-fact works"
@@ -31,6 +37,9 @@
 
 (fact "replace-ints works"
       (replace-ints {"ABCD" "B" "AB" "100"}) => {"ABCD" "B" "AB" 100})
+
+(fact "replace-floats works"
+      (replace-floats {"ABCD" "B" "ERA" "3.420000"}) => {"ABCD" "B" "ERA" 3.42})
 
 (fact "keywordify-map works"
       (keywordify-map {"A" "B"}) => {:lahman/A "B"})
