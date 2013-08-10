@@ -47,3 +47,6 @@
 
          (db conn) )
       (sort-by second))))
+
+(defn teamIDs [conn]
+  (map first (q '[:find ?team :where [?x :lahman/teamID ?team]] (db conn))))
