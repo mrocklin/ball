@@ -56,6 +56,11 @@
                "SF" :db.type/long
                "GIDP" :db.type/long
                "G_old" :db.type/long})
+(def team-franchise-types 
+              {"franchID" :db.type/string
+               "franchName" :db.type/string
+               "active" :db.type/string
+               "NAssoc" :db.type/string})
 (def team-types
               {"yearID" :db.type/long
                "lgID" :db.type/string
@@ -137,9 +142,10 @@
                "SF" :db.type/long
                "GIDP" :db.type/long})
 
-(def types (merge master-types batting-types team-types pitching-types))
+(def types (merge master-types batting-types team-types 
+                  team-franchise-types pitching-types))
 
-(def index-keys #{"lahmanID" "playerID" "teamID" "yearID"})
+(def index-keys #{"lahmanID" "playerID" "teamID" "yearID" "franchiseID"})
 
 (def schema (for [[ident typ] types]
                    {:db/id (d/tempid :db.part/db)
