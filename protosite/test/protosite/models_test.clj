@@ -42,3 +42,9 @@
 (facts "ready-for-data-tables makes ideal output"
        (ready-for-data-tables [[1 2] [3 4]]) =>
        (json/write-str {"aaData" [["1" "2"] ["3" "4"]]}))
+
+(facts "NYN is in teams"
+       (with-connection conn
+             (d/transact conn schema)
+             (d/transact conn teams-facts)
+             (teamIDs conn) => (contains "NYN")))
