@@ -38,7 +38,7 @@
 (fact "remove-empty-items works"
        (remove-empty-items {1 "" 2 "two"}) => {2 "two"})
 
-(def master-facts (facts-from-filename "resources/lahman2012/Master.csv"))
+(def master-facts (facts-from-filename "resources/lahman2012/Master-test.csv"))
 
 (facts "deathday/month/year and birth/day/month/year do not occur in master facts"
       (not-any? #(contains? % "birthDay") master-facts) => true
