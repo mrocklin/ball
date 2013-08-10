@@ -2,7 +2,7 @@
   (:require [datomic.api :only [db] :as d]))
 
 (def master-types
-              {"ahmanID" :db.type/long
+              {"lahmanID" :db.type/long
                "playerID" :db.type/string
                "managerID" :db.type/string
                "hofID" :db.type/string
@@ -56,7 +56,7 @@
                "SF" :db.type/long
                "GIDP" :db.type/long
                "G_old" :db.type/long})
-(def team-franchise-types 
+(def team-franchise-types
               {"franchID" :db.type/string
                "franchName" :db.type/string
                "active" :db.type/string
@@ -142,7 +142,7 @@
                "SF" :db.type/long
                "GIDP" :db.type/long})
 
-(def types (merge master-types batting-types team-types 
+(def types (merge master-types batting-types team-types
                   team-franchise-types pitching-types))
 
 (def index-keys #{"lahmanID" "playerID" "teamID" "yearID" "franchiseID"})
