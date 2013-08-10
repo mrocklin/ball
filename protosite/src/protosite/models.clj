@@ -50,3 +50,7 @@
 
 (defn teamIDs [conn]
   (map first (q '[:find ?team :where [?x :lahman/teamID ?team]] (db conn))))
+
+(defn team-names [conn]
+  (map first (q '[:find ?teamName :where [?x :lahman/name ?teamName]
+                                         [?x :lahman/teamID ?teamid]] (db conn))))
