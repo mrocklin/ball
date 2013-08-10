@@ -17,14 +17,12 @@
     mapify
     json/write-str))
 
-(defn get-name-map [conn]
-  (let [results
-    (q '[:find ?playerID ?first ?last :where [?x :lahman/playerID ?playerID]
+(def get-names (memoize (fn [conn]
+    (q '[:find ?playerID ?first ?last
+         :where [?x :lahman/playerID ?playerID]
                                              [?x :lahman/nameFirst ?first]
                                              [?x :lahman/nameLast  ?last]]
-     (db conn))]
-    (zipmap (map first results) (map rest results))))
-
+     (db conn)))))
 
 (defn team-record [conn teamID year]
   (let [attrs batting-attrs
@@ -33,13 +31,10 @@
         keyword-attrs (map keywordify attrs)
         where-clauses (map #(vector x %1 %2) keyword-attrs valnames)]
     (->>
-      (q {:find (concat '[?first ?last] valnames)
-        :where (concat [[x :lahman/playerID '?playerID]
-                         [x :lahman/teamID teamID]
-                         [x :lahman/yearID year]
-                         ['?y :lahman/playerID '?playerID]
-                         ['?y :lahman/nameFirst '?first]
-                         ['?y :lahman/nameLast '?last]]
+      (q {:find (concat '[?playerID] valnames)
+          :where (concat [[x :lahman/playerID '?playerID]
+                          [x :lahman/teamID teamID]
+                          [x :lahman/yearID year]]
                        where-clauses)}
 
          (db conn) )

@@ -16,7 +16,6 @@
   (route/resources "/")
   (route/not-found "<h1>Page not found</h1>"))
 
-
 ;(run-jetty handler {:port 3000})
 
 (def port 5000)

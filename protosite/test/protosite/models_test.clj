@@ -4,7 +4,8 @@
             [protosite.models :refer :all]
             [protosite.lahman-schema :refer [schema]]
             [protosite.datomic-test :refer [with-connection]]
-            [protosite.datomic-lahman-test :refer :all])
+            [protosite.datomic-lahman-test :refer :all]
+            [midje.sweet :refer :all])
   (:use [datomic.api :only [db q] :as d]))
 
 (facts "lvar produces a logic variable"
@@ -15,11 +16,11 @@
            [[1,2,3], [3,2,3]])) => #{[1] [3]}
        )
 
-(facts "get-name-map returns map of playerID to [first, last]"
+(facts "get-names "
       (with-connection conn
         (d/transact conn schema)
         (d/transact conn master-facts)
-        ((get-name-map conn) "strawda01") => ["Darryl" "Strawberry"]))
+        (contains? (get-names conn) ["strawda01" "Darryl" "Strawberry"]) => true))
 
 
 (facts ""
