@@ -50,7 +50,7 @@ $( document ).ready( function() {
     $("#team").bind('keypress', function(e) {
         var team = $("#team").val() + String.fromCharCode(e.keyCode);
         var year = $("#year").val() ;
-        if(contains(teamNames, team)){
+        if(_.contains(teamNames, team)){
             updateDataTable(oTable, team, year);
         }
     });
@@ -59,7 +59,7 @@ $( document ).ready( function() {
         url: "/teamnames/",
         success: function(data, aStatus, dummy){
             teamMap = data;
-            teamNames = keys(data);
+            teamNames = _.keys(data);
             $( "#team" ).autocomplete({
                 source: teamNames
             });
