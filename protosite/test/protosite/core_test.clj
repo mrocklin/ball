@@ -2,6 +2,7 @@
   (:use [midje.sweet])
   (:require [compojure.route :as route]
             [compojure.core :refer :all]
+            [clojure.data.json :as json]
             [protosite.core :refer :all]))
 
 
@@ -38,3 +39,10 @@
        (let [r (request "/team/NYN/1990/" app)]
          (:status r) => 200
          (:body r) => (contains "152"))))
+
+(facts "basic query gets a functioning route"
+       (let [r (request "/query/" app
+                    {"want" "AB"
+                     "constraints" [["yearID" 1990] ["playerID" "strawda01"]]})]
+         (:status r) => 200
+         (:body r) => (json/write-str [542])))
