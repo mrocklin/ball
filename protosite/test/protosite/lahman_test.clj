@@ -41,9 +41,6 @@
       (replace-type :db.type/float parse-float {"ABCD" "B" "ERA" "3.420000"})
       => {"ABCD" "B" "ERA" (float 3.42)})
 
-(fact "replace-floats works"
-      (replace-floats {"ABCD" "B" "ERA" "3.420000"}) => {"ABCD" "B" "ERA" (float 3.42)})
-
 (fact "keywordify-map works"
       (keywordify-map {"A" "B"}) => {:lahman/A "B"})
 
