@@ -55,3 +55,13 @@
   (into {} (q '[:find ?teamName ?teamID
                 :where [?x :lahman/name ?teamName]
                        [?x :lahman/teamID ?teamID]] (db conn))))
+
+(defn basic-query [conn wanted constraints]
+  (let [wanted-attr (keywordify wanted)
+        x (lvar "x")
+        where-clauses (for [[attr value] constraints]
+                           [x (keywordify attr) value])]
+    (map first
+      (q {:find ['?want]
+          :where (concat where-clauses [[x wanted-attr '?want]])}
+         (db conn)))))
