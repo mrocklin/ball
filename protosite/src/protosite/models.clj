@@ -19,9 +19,9 @@
 
 (def get-names (memoize (fn [conn]
     (q '{:find [?pID ?first ?last]
-         :where [[?x :lahman/playerID ?pID]
-                [?x :lahman/nameFirst ?first]
-                [?x :lahman/nameLast  ?last]]}
+         :where [[?x :lahman/nameFirst ?first]
+                 [?x :lahman/playerID  ?pID]
+                 [?x :lahman/nameLast  ?last]]}
      (db conn)))))
 
 (def get-name-map (memoize (fn [conn]
@@ -53,5 +53,5 @@
 
 (defn team-names [conn]
   (into {} (q '[:find ?teamName ?teamID
-            :where [?x :lahman/name ?teamName]
-                   [?x :lahman/teamID ?teamID]] (db conn))))
+                :where [?x :lahman/name ?teamName]
+                       [?x :lahman/teamID ?teamID]] (db conn))))
