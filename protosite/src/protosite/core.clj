@@ -1,4 +1,5 @@
 (ns protosite.core
+  (:gen-class)
   (:require [ring.adapter.jetty :refer :all]
             [compojure.route :as route]
             [compojure.core :refer :all]
