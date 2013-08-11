@@ -35,8 +35,11 @@
       (map-to-fact {"playerID" "joe" "bats" "L" "AB" "100"})
       => {:lahman/playerID "joe" :lahman/bats "L" :lahman/AB 100})
 
-(fact "replace-ints works"
-      (replace-ints {"ABCD" "B" "AB" "100"}) => {"ABCD" "B" "AB" 100})
+(facts "replace-type works"
+      (replace-type :db.type/long parse-int {"ABCD" "B" "AB" "100"})
+      => {"ABCD" "B" "AB" 100}
+      (replace-type :db.type/float parse-float {"ABCD" "B" "ERA" "3.420000"})
+      => {"ABCD" "B" "ERA" (float 3.42)})
 
 (fact "replace-floats works"
       (replace-floats {"ABCD" "B" "ERA" "3.420000"}) => {"ABCD" "B" "ERA" (float 3.42)})
