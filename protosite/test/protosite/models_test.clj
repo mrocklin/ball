@@ -54,3 +54,14 @@
              (d/transact conn schema)
              (d/transact conn teams-facts)
              ((team-names conn) "New York Mets") => "NYN"))
+
+(facts "basic-query works"
+  (with-connection conn
+    (d/transact conn schema)
+    (d/transact conn master-facts)
+    (d/transact conn batting-facts)
+    (d/transact conn teams-facts)
+    (basic-query conn "G" [["teamID" "NYN"] ["yearID" 1990]])
+                   => (contains [82 152] :in-any-order :gaps-ok)
+    (basic-query conn "name" [["teamID" "NYN"] ["yearID" 1990]])
+                   => ["New York Mets"]))
