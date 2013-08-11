@@ -14,6 +14,7 @@
          (ready-for-data-tables (team-record  (d/connect db-uri)
                                              team (Integer/parseInt year))))
   (GET "/teamids/" [] (json/write-str (teamIDs (d/connect db-uri))))
+  (GET "/teamnames/" [] (json/write-str (team-names (d/connect db-uri))))
   (route/resources "/")
   (route/not-found "<h1>Page not found</h1>"))
 

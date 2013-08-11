@@ -49,8 +49,8 @@
              (d/transact conn teams-facts)
              (teamIDs conn) => (contains "NYN")))
 
-(facts "New York Mets is in team-namess"
+(facts "New York Mets is in team-names"
        (with-connection conn
              (d/transact conn schema)
              (d/transact conn teams-facts)
-             (team-names conn) => (contains "New York Mets")))
+             ((team-names conn) "New York Mets") => "NYN"))
