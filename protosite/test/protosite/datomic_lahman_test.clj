@@ -68,5 +68,4 @@
                                 [?x :lahman/teamID ?team]
                                 [?y :lahman/teamID ?team]
                                 [?y :lahman/name ?name]] (db conn))
-                       =>  #{["New York Mets"]}
-      ))
+                       =>  #{["New York Mets"]}))

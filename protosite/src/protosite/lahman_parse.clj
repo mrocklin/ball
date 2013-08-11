@@ -40,7 +40,7 @@
 (defn replace-ints [m]
   (let [f (fn [k v]
             (if (and (= (get types k) :db.type/long)
-                     (not (empty? v)))
+                     (seq v))
               (parse-int v) v))]
   (into {} (for [[k v] m] [k (f k v)]))))
 
