@@ -15,6 +15,9 @@
                                              team (Integer/parseInt year))))
   (GET "/teamids/" [] (json/write-str (teamIDs (d/connect db-uri))))
   (GET "/teamnames/" [] (json/write-str (team-names (d/connect db-uri))))
+  (GET "/query/" request (let [want (get-in request [:params "want"])
+                               constraints (get-in request [:params "constraints"])]
+          (json/write-str (basic-query (d/connect db-uri) want constraints))))
   (route/resources "/")
   (route/not-found "<h1>Page not found</h1>"))
 
