@@ -11,9 +11,10 @@
                 "resources/lahman2012/Teams.csv"
                 "resources/lahman2012/TeamsFranchises.csv"])
 
-(defn get-facts [] (->> filenames
-                    (map datomic-facts-from-filename)
-                    flatten))
+(defn get-facts []
+  (->> filenames
+    (map datomic-facts-from-filename)
+    flatten))
 
 (defn populate [uri]
   (if (d/create-database uri)

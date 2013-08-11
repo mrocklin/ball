@@ -62,7 +62,8 @@ $( document ).ready( function() {
             teamNames = keys(data);
             $( "#team" ).autocomplete({
                 source: teamNames
-            });},
+            });
+        },
         dataType: "json"});
 
 });
