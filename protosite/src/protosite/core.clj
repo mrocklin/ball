@@ -1,4 +1,5 @@
 (ns protosite.core
+  (:gen-class)
   (:require [ring.adapter.jetty :refer :all]
             [clojure.data.json :as json]
             [compojure.route :as route]
