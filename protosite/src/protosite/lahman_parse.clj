@@ -37,19 +37,13 @@
     m
     (assoc m name (date-of-str (m name)))))
 
-(defn replace-ints [m]
+(defn replace-type [typ parse-typ m]
   (let [f (fn [k v]
-            (if (and (= (get types k) :db.type/long)
+            (if (and (= (get types k) typ)
                      (seq v))
-              (parse-int v) v))]
+              (parse-typ v) v))]
   (into {} (for [[k v] m] [k (f k v)]))))
 
-(defn replace-floats [m]
-  (let [f (fn [k v]
-            (if (and (= (get types k) :db.type/float)
-                     (not (empty? v)))
-              (parse-float v) v))]
-  (into {} (for [[k v] m] [k (f k v)]))))
 
 (defn keywordify-map [m]
   (zipmap (->> m keys (map lahman-keywordify)) (vals m)))
@@ -67,8 +61,8 @@
     (replace-string-with-date "finalGame")
     (replace-ymd-with-date "birth")
     (replace-ymd-with-date "death")
-    replace-ints
-    replace-floats
+    (replace-type :db.type/long parse-int)
+    (replace-type :db.type/float parse-float)
     keywordify-map))
 
 (defn facts-from-filename [f]
