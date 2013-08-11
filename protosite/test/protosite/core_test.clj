@@ -45,4 +45,15 @@
                     {"want" "AB"
                      "constraints" [["yearID" 1990] ["playerID" "strawda01"]]})]
          (:status r) => 200
-         (:body r) => (json/write-str [542])))
+         (:body r) => (json/write-str [542]))
+       (let [r (request "/query/" app
+                    {"want" "AB"
+                     "constraints" [["playerID" "strawda01"]]})]
+         (:status r) => 200
+         (:body r) => (contains "542"))
+       (let [r (request "/query/" app
+                    {"want" "yearID"
+                     "constaints" [["name" "New York Mets"]]})]
+         (:status r) => 200
+         (:body r) => (contains "1990")
+         (:body r) => (contains "1991")))
