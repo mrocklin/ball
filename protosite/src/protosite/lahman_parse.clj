@@ -41,7 +41,8 @@
   (let [f (fn [k v]
             (if (and (= (get types k) typ)
                      (seq v))
-              (parse-typ v) v))]
+              (parse-typ v)
+              v))]
   (into {} (for [[k v] m] [k (f k v)]))))
 
 
