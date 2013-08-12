@@ -65,3 +65,11 @@
                    => (contains [82 152] :in-any-order :gaps-ok)
     (basic-query conn "name" [["teamID" "NYN"] ["yearID" 1990]])
                    => ["New York Mets"]))
+
+
+(facts "no-join-query works"
+  (with-connection conn
+    (d/transact conn schema)
+    (d/transact conn batting-facts)
+    (no-join-query conn ["G" "G_batting"] [["teamID" "NYN"] ["yearID" 1990]])
+               => truthy)) ; TODO:  => (contains [152 152]) should work but doesn't

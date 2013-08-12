@@ -62,12 +62,18 @@
                 :where [?x :lahman/name ?teamName]
                        [?x :lahman/teamID ?teamID]] (db conn))))
 
-(defn basic-query [conn wanted constraints]
-  (let [wanted-attr (keywordify wanted)
-        x (lvar "x")
-        where-clauses (for [[attr value] constraints]
+(defn no-join-query [conn wanted constraints]
+  " A simple select &wanted from all-tables where &constraints=values query
+    (no-join-query conn ['name'] [['state' 'IL'] ['balance' 0]])
+    => the names of all people in Illinois with zero balance"
+  (let [x (lvar "x")
+        wanted-clauses (for [attr wanted] [x (keywordify attr) (lvar attr)])
+        constraint-clauses (for [[attr value] constraints]
                            [x (keywordify attr) value])]
-    (map first
-      (q {:find ['?want]
-          :where (concat where-clauses [[x wanted-attr '?want]])}
-         (db conn)))))
+    (q {:find (map lvar wanted)
+        :where (concat constraint-clauses wanted-clauses)}
+       (db conn))))
+
+(defn basic-query [conn wanted constraints]
+  " Like no-join-query but with only one wanted attribute "
+  (map first (no-join-query conn [wanted] constraints)))
