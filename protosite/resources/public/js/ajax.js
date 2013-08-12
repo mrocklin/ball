@@ -4,31 +4,37 @@
 
 $( document ).ready( function() {
 
-    // Load Data Table
-    $.ajax({
-        url: "/team/NYN/1990/",
-        success: function(data, aStatus, dummy){
-            oTable = $('#example').dataTable({
-                "bProcessing": true,
-            "aoColumns": data.aoColumns,
-            "aaData": data.aaData,
-            "iDisplayLength": 25,
-            });
-        },
-        dataType: "json"});
 
+    function urlFrom(team, year){
+        return "/team/" + team + "/" + year + "/";
+    }
+
+    function loadDataTable(team, year){
+        $.ajax({
+            url: urlFrom(team, year),
+            success: function(data, aStatus, dummy){
+                oTable = $('#example').dataTable({
+                    "bProcessing": true,
+                "aoColumns": data.aoColumns,
+                "aaData": data.aaData,
+                "iDisplayLength": 25,
+                });
+            },
+            dataType: "json"});
+    }
 
     function updateDataTable(tbl, team, year){
-        team = teamMap[team];
-        var url = "/team/" + team + "/" + year + "/";
+        var team = teamMap[team];
         $.ajax({
-            url: url,
+            url: urlFrom(team, year),
             success: function(data, aStatus, dummy){
                 oTable.fnClearTable();
                 oTable.fnAddData(data.aaData);
             },
         dataType: "json"});
     }
+
+    loadDataTable("NYN", 1990);
 
     $("#year").bind('keypress', function(e) {
         var year = $("#year").val() + String.fromCharCode(e.keyCode);
