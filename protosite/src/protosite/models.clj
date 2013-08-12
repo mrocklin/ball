@@ -9,14 +9,6 @@
 
 (defn lvar [s] (symbol (str "?" s)))
 
-(defn mapify [x] {"aaData" x})
-
-(defn ready-for-data-tables [grid]
-  (->> grid
-    (map #(map str %))
-    mapify
-    json/write-str))
-
 (def get-names (memoize (fn [conn]
     (q '{:find [?pID ?first ?last]
          :where [[?x :lahman/nameFirst ?first]
@@ -67,9 +59,10 @@
     (no-join-query conn ['name'] [['state' 'IL'] ['balance' 0]])
     => the names of all people in Illinois with zero balance"
   (let [x (lvar "x")
-        wanted-clauses (for [attr wanted] [x (keywordify attr) (lvar attr)])
+        wanted-clauses     (for [attr wanted]
+                             [x (keywordify attr) (lvar attr)])
         constraint-clauses (for [[attr value] constraints]
-                           [x (keywordify attr) value])]
+                             [x (keywordify attr) value])]
     (q {:find (map lvar wanted)
         :where (concat constraint-clauses wanted-clauses)}
        (db conn))))

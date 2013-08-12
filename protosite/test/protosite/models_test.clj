@@ -39,10 +39,6 @@
               ["Darryl" "Strawberry" 152 542 92 150 18 1 37 108 70]])
       )
 
-(fact "ready-for-data-tables makes ideal output"
-       (ready-for-data-tables [[1 2] [3 4]]) =>
-       (json/write-str {"aaData" [["1" "2"] ["3" "4"]]}))
-
 (fact "NYN is in teams"
        (with-connection conn
              (d/transact conn schema)
