@@ -16,20 +16,20 @@
            [[1,2,3], [3,2,3]])) => #{[1] [3]}
        )
 
-(facts "get-names "
+(fact "get-names "
       (with-connection conn
         (d/transact conn schema)
         (d/transact conn master-facts)
         (contains? (get-names conn) ["strawda01" "Darryl" "Strawberry"]) => true))
 
-(facts "get-name-map returns map of playerID to [first, last]"
+(fact "get-name-map returns map of playerID to [first, last]"
   (with-connection conn
     (d/transact conn schema)
     (d/transact conn master-facts)
     ((get-name-map conn) "strawda01") => ["Darryl" "Strawberry"]))
 
 
-(facts ""
+(fact ""
       (with-connection conn
         (d/transact conn schema)
         (d/transact conn master-facts)
@@ -39,17 +39,17 @@
               ["Darryl" "Strawberry" 152 542 92 150 18 1 37 108 70]])
       )
 
-(facts "ready-for-data-tables makes ideal output"
+(fact "ready-for-data-tables makes ideal output"
        (ready-for-data-tables [[1 2] [3 4]]) =>
        (json/write-str {"aaData" [["1" "2"] ["3" "4"]]}))
 
-(facts "NYN is in teams"
+(fact "NYN is in teams"
        (with-connection conn
              (d/transact conn schema)
              (d/transact conn teams-facts)
              (teamIDs conn) => (contains "NYN")))
 
-(facts "New York Mets is in team-names"
+(fact "New York Mets is in team-names"
        (with-connection conn
              (d/transact conn schema)
              (d/transact conn teams-facts)
