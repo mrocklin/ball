@@ -11,8 +11,7 @@
 (defroutes app
   (GET "/" [] "<h1>Welcome to Fantasy Baseball!</h1>")
   (GET ["/team/:team/:year/" :team #"\w{3}" :year #"\d{4}"] [team year]
-         (ready-for-data-tables (team-record  (d/connect db-uri)
-                                             team (Integer/parseInt year))))
+    (json/write-str (team-response (d/connect db-uri) team (Integer/parseInt year) batting-attrs)))
   (GET "/teamids/" [] (json/write-str (teamIDs (d/connect db-uri))))
   (GET "/teamnames/" [] (json/write-str (team-names (d/connect db-uri))))
   (GET "/query/" request (let [want (get-in request [:params "want"])

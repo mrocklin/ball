@@ -34,7 +34,7 @@
         (d/transact conn schema)
         (d/transact conn master-facts)
         (d/transact conn batting-facts)
-        (team-record conn "NYN" 1990) =>
+        (team-record conn "NYN" 1990 batting-attrs) =>
              [["Mark" "Carreon" 82 188 30 47 12 0 10 26 15]
               ["Darryl" "Strawberry" 152 542 92 150 18 1 37 108 70]])
       )

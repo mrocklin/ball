@@ -28,9 +28,8 @@
   (into {} (for [[pid f l] (get-names conn)] [pid [f l]])))))
 
 
-(defn team-record [conn teamID year]
-  (let [attrs batting-attrs
-        x (lvar "x")
+(defn team-record [conn teamID year attrs]
+  (let [x (lvar "x")
         y (lvar "y")
         valnames (map lvar attrs)
         keyword-attrs (map keywordify attrs)
@@ -47,6 +46,13 @@
 
          (db conn) )
       (sort-by second))))
+
+(defn team-response [conn team year attrs]
+  (let [data (team-record conn team year attrs)
+        strdata (map #(map str %) data)
+        all-attrs (concat ["First" "Last"] attrs)
+        strcols (into [] (for [attr all-attrs] {"sTitle" attr}))]
+        {"aaData" strdata "aoColumns" strcols}))
 
 (defn teamIDs [conn]
   (map first (q '[:find ?team :where [?x :lahman/teamID ?team]] (db conn))))
