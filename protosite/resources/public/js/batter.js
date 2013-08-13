@@ -1,11 +1,12 @@
-function urlFrom(team, year){
-    return "/team/" + team + "/" + year + "/";
+function urlFrom(batter){
+    return "/player/" + batter + "/";
 }
 
 function loadDataTable(url){
     $.ajax({
         url: url,
         success: function(data, aStatus, dummy){
+            console.log(data);
             oTable = $('#example').dataTable({
                 "bProcessing": true,
             "aoColumns": data.aoColumns,
@@ -29,35 +30,10 @@ function updateDataTable(tbl, url){
 
 $( document ).ready( function() {
 
-    loadDataTable(urlFrom("NYN", 1990));
+    loadDataTable(urlFrom("strawda01"));
 
-    $("#year").bind('keypress', function(e) {
-        var year = $("#year").val() + String.fromCharCode(e.keyCode);
-        var teamName = $("#team").val();
-        var team = teamMap[teamName];
-        if(year.length == 4){
-            updateDataTable(oTable, urlFrom(team, year));
-        }
+    $("#batter").bind('keypress', function(e) {
+        var batter = $("#batter").val() + String.fromCharCode(e.keyCode);
+        updateDataTable(oTable, urlFrom(batter));
     });
-
-    $("#team").bind('keypress', function(e) {
-        var teamName = $("#team").val() + String.fromCharCode(e.keyCode);
-        var team = teamMap[teamName];
-        var year = $("#year").val() ;
-        if(_.contains(teamNames, team)){
-            updateDataTable(oTable, urlFrom(team, year));
-        }
-    });
-
-    // Set up auto-complete
-    $.ajax({
-        url: "/teamnames/",
-        success: function(data, aStatus, dummy){
-            teamMap = data;
-            teamNames = _.keys(data);
-            $( "#team" ).autocomplete({
-                source: teamNames
-            });
-        },
-        dataType: "json"});
 });
