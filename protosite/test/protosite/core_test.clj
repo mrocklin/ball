@@ -61,4 +61,6 @@
 (fact "Player Query for Daryll includes his at-bats for 1990"
        (let [r (request "/player/strawda01/" app)]
          (:status r) => 200
+         (:body r) => (contains "aaData")
+         (:body r) => (contains "aoColumns")
          (:body r) => (contains "152"))) ;; TODO: Better test
