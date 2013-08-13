@@ -18,6 +18,9 @@
   (GET "/query/" request (let [want (get-in request [:params "want"])
                                constraints (get-in request [:params "constraints"])]
           (json/write-str (basic-query (d/connect db-uri) want constraints))))
+  (GET ["/player/:pid/" :pid #"\w*"] [pid]
+       (json/write-str (sort-by first (no-join-query (d/connect db-uri)
+            (concat ["yearID" "teamID"] batting-attrs) [["playerID" pid]]))))
   (route/resources "/")
   (route/not-found "<h1>Page not found</h1>"))
 
