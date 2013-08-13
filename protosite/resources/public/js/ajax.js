@@ -17,7 +17,6 @@ function loadDataTable(team, year){
 }
 
 function updateDataTable(tbl, team, year){
-    var team = teamMap[team];
     $.ajax({
         url: urlFrom(team, year),
         success: function(data, aStatus, dummy){
@@ -34,14 +33,16 @@ $( document ).ready( function() {
 
     $("#year").bind('keypress', function(e) {
         var year = $("#year").val() + String.fromCharCode(e.keyCode);
-        var team = $("#team").val()
+        var teamName = $("#team").val();
+        var team = teamMap[teamName];
         if(year.length == 4){
             updateDataTable(oTable, team, year);
         }
     });
 
     $("#team").bind('keypress', function(e) {
-        var team = $("#team").val() + String.fromCharCode(e.keyCode);
+        var teamName = $("#team").val() + String.fromCharCode(e.keyCode);
+        var team = teamMap[teamName];
         var year = $("#year").val() ;
         if(_.contains(teamNames, team)){
             updateDataTable(oTable, team, year);
