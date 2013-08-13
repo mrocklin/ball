@@ -2,9 +2,9 @@ function urlFrom(team, year){
     return "/team/" + team + "/" + year + "/";
 }
 
-function loadDataTable(team, year){
+function loadDataTable(url){
     $.ajax({
-        url: urlFrom(team, year),
+        url: url,
         success: function(data, aStatus, dummy){
             oTable = $('#example').dataTable({
                 "bProcessing": true,
@@ -16,9 +16,9 @@ function loadDataTable(team, year){
         dataType: "json"});
 }
 
-function updateDataTable(tbl, team, year){
+function updateDataTable(tbl, url){
     $.ajax({
-        url: urlFrom(team, year),
+        url: url,
         success: function(data, aStatus, dummy){
             oTable.fnClearTable();
             oTable.fnAddData(data.aaData);
@@ -29,14 +29,14 @@ function updateDataTable(tbl, team, year){
 
 $( document ).ready( function() {
 
-    loadDataTable("NYN", 1990);
+    loadDataTable(urlFrom("NYN", 1990));
 
     $("#year").bind('keypress', function(e) {
         var year = $("#year").val() + String.fromCharCode(e.keyCode);
         var teamName = $("#team").val();
         var team = teamMap[teamName];
         if(year.length == 4){
-            updateDataTable(oTable, team, year);
+            updateDataTable(oTable, urlFrom(team, year));
         }
     });
 
@@ -45,7 +45,7 @@ $( document ).ready( function() {
         var team = teamMap[teamName];
         var year = $("#year").val() ;
         if(_.contains(teamNames, team)){
-            updateDataTable(oTable, team, year);
+            updateDataTable(oTable, urlFrom(team, year));
         }
     });
 
