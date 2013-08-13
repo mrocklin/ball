@@ -67,6 +67,13 @@
         :where (concat constraint-clauses wanted-clauses)}
        (db conn))))
 
+(defn no-join-response [conn wanted constraints]
+  (let [data (no-join-query conn wanted constraints)
+        strdata (map #(map str %) data)
+        strcols (into [] (for [attr wanted] {"sTitle" attr}))]
+        {"aaData" strdata "aoColumns" strcols}))
+
+
 (defn basic-query [conn wanted constraints]
   " Like no-join-query but with only one wanted attribute "
   (map first (no-join-query conn [wanted] constraints)))
