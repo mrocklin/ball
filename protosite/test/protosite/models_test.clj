@@ -67,5 +67,13 @@
   (with-connection conn
     (d/transact conn schema)
     (d/transact conn batting-facts)
-    (no-join-query conn ["G" "G_batting"] [["teamID" "NYN"] ["yearID" 1990]])
-               => truthy)) ; TODO:  => (contains [152 152]) should work but doesn't
+    (no-join-query conn ["G" "G_batting"] [["teamID" "NYN"] ["yearID" 1990] ["playerID" "strawda01"]])
+               => #{[152 152]}))
+
+(facts "no-join-response contains aaData and aoColumns with correct entries"
+  (with-connection conn
+    (d/transact conn schema)
+    (d/transact conn batting-facts)
+    (no-join-response conn ["G" "G_batting"] [["teamID" "NYN"] ["yearID" 1990] ["playerID" "strawda01"]])
+    => {"aaData" [["152" "152"]]
+        "aoColumns" [{"sTitle" "G"} {"sTitle" "G_batting"}]}))
