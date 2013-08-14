@@ -8,20 +8,31 @@ function setUpClickAction(){
     $(document).on("click", ".clickableValue", function() {
         var playerID = $(this).parent().parent().attr('id');
         var attribute = $(this).parent().attr('id');
+        var year = $("#year").val() ;
         $.ajax({
             url: "/player-history/"+playerID+"/"+attribute+"/",
             success: function(data, sStatus, dummy){
-                        $("#result").html(data.data.join(','));
+                        $("#playerdata").html(data.data.join(','));
                      },
             dataType: "json"
             });
-
+        $.ajax({
+            url: "/year-attribute/"+year+"/"+attribute+"/",
+            dataType: "json",
+            success: function(data, sStatus, dummy){
+                        var bars = bins(data.data, 20);
+                        $("#yeardata").html(
+                        "BarCenters: "+bars.centers.join(', ') +
+                        "    BarHeights: "+bars.heights.join(', '));
+                        tmp = data.data;
+                     }
+        });
     });
 }
 
 $( document ).ready( function() {
 
-    loadDataTable(urlFrom("NYN", 1990));
+    loadDataTable(urlFrom("SFN", 2012));
 
     setUpClickAction();
 
