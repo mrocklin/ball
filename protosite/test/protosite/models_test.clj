@@ -34,10 +34,17 @@
         (d/transact conn schema)
         (d/transact conn master-facts)
         (d/transact conn batting-facts)
-        (team-record conn "NYN" 1990 batting-attrs) =>
-             [["Mark" "Carreon" 82 188 30 47 12 0 10 26 15]
-              ["Darryl" "Strawberry" 152 542 92 150 18 1 37 108 70]])
-      )
+        (let [result (team-record conn "NYN" 1990 batting-attrs)]
+          (:data result) => [["Mark" "Carreon" 82 188 30 47 12 0 10 26 15]
+                             ["Darryl" "Strawberry" 152 542 92 150 18 1 37 108 70]]
+          (:columns result) => (concat ["first" "last"] batting-attrs)
+          (:rows result) => ["carrema01" "strawda01"])
+        (let [result (response (team-record conn "NYN" 1990 batting-attrs))]
+          (every? #(instance? String %) (first (:data result))) => true
+          (:columns result) => (contains {"sTitle" "first"}))))
+
+
+
 
 (fact "NYN is in teams"
        (with-connection conn
@@ -57,10 +64,12 @@
     (d/transact conn master-facts)
     (d/transact conn batting-facts)
     (d/transact conn teams-facts)
-    (basic-query conn "G" [["teamID" "NYN"] ["yearID" 1990]])
-                   => (contains [82 152] :in-any-order :gaps-ok)
-    (basic-query conn "name" [["teamID" "NYN"] ["yearID" 1990]])
-                   => ["New York Mets"]))
+    (let [result (basic-query conn "G" [["teamID" "NYN"] ["yearID" 1990]])]
+      (:data result)  => (contains [82 152] :in-any-order :gaps-ok)
+      (:columns result) => ["G"])
+    (let [result (basic-query conn "name" [["teamID" "NYN"] ["yearID" 1990]])]
+      (:data result) => ["New York Mets"]
+      (:columns result) => ["name"])))
 
 
 (facts "no-join-query works"
@@ -68,12 +77,13 @@
     (d/transact conn schema)
     (d/transact conn batting-facts)
     (no-join-query conn ["G" "G_batting"] [["teamID" "NYN"] ["yearID" 1990] ["playerID" "strawda01"]])
-               => #{[152 152]}))
+               => {:data #{[152 152]}
+                   :columns ["G" "G_batting"]}))
 
 (facts "no-join-response contains aaData and aoColumns with correct entries"
   (with-connection conn
     (d/transact conn schema)
     (d/transact conn batting-facts)
-    (no-join-response conn ["G" "G_batting"] [["teamID" "NYN"] ["yearID" 1990] ["playerID" "strawda01"]])
-    => {"aaData" [["152" "152"]]
-        "aoColumns" [{"sTitle" "G"} {"sTitle" "G_batting"}]}))
+    (response (no-join-query conn ["G" "G_batting"] [["teamID" "NYN"] ["yearID" 1990] ["playerID" "strawda01"]]))
+    => {:data [["152" "152"]]
+        :columns [{"sTitle" "G"} {"sTitle" "G_batting"}]}))
