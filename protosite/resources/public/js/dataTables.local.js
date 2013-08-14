@@ -4,8 +4,8 @@ function loadDataTable(url){
         success: function(data, aStatus, dummy){
             oTable = $('#example').dataTable({
                 "bProcessing": true,
-            "aoColumns": data.aoColumns,
-            "aaData": data.aaData,
+            "aoColumns": data.columns,
+            "aaData": data.data,
             "iDisplayLength": 25,
             });
         },
@@ -17,7 +17,7 @@ function updateDataTable(tbl, url){
         url: url,
         success: function(data, aStatus, dummy){
             oTable.fnClearTable();
-            oTable.fnAddData(data.aaData);
+            oTable.fnAddData(data.data);
         },
     dataType: "json"});
 }
