@@ -12,7 +12,11 @@ function setUpClickAction(){
         $.ajax({
             url: "/player-history/"+playerID+"/"+attribute+"/",
             success: function(data, sStatus, dummy){
-                        $("#playerdata").html(data.data.join(','));
+                        var years = _.map(data.data, _.first);
+                        var values = _.map(data.data, _.last);
+                        $("#playerdata").html(
+                        "Years: "+years.join(', ') + "    "  +
+                        "Values: "+values.join(', '));
                      },
             dataType: "json"
             });
@@ -22,8 +26,8 @@ function setUpClickAction(){
             success: function(data, sStatus, dummy){
                         var bars = bins(data.data, 20);
                         $("#yeardata").html(
-                        "BarCenters: "+bars.centers.join(', ') +
-                        "    BarHeights: "+bars.heights.join(', '));
+                        "BarCenters: "+bars.centers.join(', ') + "    " +
+                        "BarHeights: "+bars.heights.join(', '));
                         tmp = data.data;
                      }
         });
