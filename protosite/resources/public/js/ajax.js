@@ -8,14 +8,12 @@ function setUpClickAction(){
     $(".clickableValue").click(function() {
         var playerID = $(this).parent().parent().attr('id');
         var attribute = $(this).parent().attr('id');
-        console.log(playerID+attribute);
         $.ajax({
             url: "/player-history/"+playerID+"/"+attribute+"/",
             success: function(data, sStatus, dummy){
-                        console.log(data);
-                        console.log(data["data"]);
-                        $("#result").html(data.data);
-                     }
+                        $("#result").html(data.data.join(','));
+                     },
+            dataType: "json"
             });
 
     });
