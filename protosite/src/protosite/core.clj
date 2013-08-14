@@ -11,8 +11,6 @@
 
 (defroutes app
   (GET "/" [] "<h1>Welcome to Fantasy Baseball!</h1>")
-  (GET ["/team/:team/:year/" :team #"\w{3}" :year #"\d{4}"] [team year]
-    (json/write-str (response (team-record (d/connect db-uri) team (Integer/parseInt year) batting-attrs))))
   (GET "/teamids/" [] (json/write-str (teamIDs (d/connect db-uri))))
   (GET "/teamnames/" [] (json/write-str (team-names (d/connect db-uri))))
   (GET "/query/" request (let [want (get-in request [:params "want"])
@@ -31,6 +29,15 @@
   (GET ["/player/:pid/" :pid #"\w*"] [pid]
        (json/write-str (response (no-join-query (d/connect db-uri)
             (concat ["yearID" "teamID"] batting-attrs) [["playerID" pid]]))))
+
+  (GET ["/team/:team/:year/" :team #"\w{3}" :year #"\d{4}"] [team year]
+       (json/write-str (response (team-record (d/connect db-uri)
+                            team (Integer/parseInt year) batting-attrs))))
+
+  (GET ["/player-history/:pid/:attr/" :pid #"\w*" :attr #"\w*"] [pid attr]
+       (let [result (basic-query (d/connect db-uri) attr [["playerID" pid]])]
+         (json/write-str (assoc result :data (map str (:data result))))))
+
   (route/resources "/")
   (route/not-found "<h1>Page not found</h1>"))
 

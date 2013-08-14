@@ -71,3 +71,9 @@
          (:status r) => 200
          (json/read-str (:body r)) =>{"first" "Darryl" "last" "Strawberry"}))
 
+(fact "player-history yields array of values"
+      (let [r (request "/player-history/strawda01/HR/" app)
+            body (json/read-str (:body r))]
+        (:status r) => 200
+        (body "columns") => ["HR"]
+        (body "data") => truthy))
