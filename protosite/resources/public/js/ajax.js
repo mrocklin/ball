@@ -2,6 +2,25 @@ function urlFrom(team, year){
     return "/team/" + team + "/" + year + "/";
 }
 
+
+function setUpClickAction(){
+    // Set up click action
+    $(".clickableValue").click(function() {
+        var playerID = $(this).parent().parent().attr('id');
+        var attribute = $(this).parent().attr('id');
+        console.log(playerID+attribute);
+        $.ajax({
+            url: "/player-history/"+playerID+"/"+attribute+"/",
+            success: function(data, sStatus, dummy){
+                        console.log(data);
+                        console.log(data["data"]);
+                        $("#result").html(data.data);
+                     }
+            });
+
+    });
+}
+
 $( document ).ready( function() {
 
     loadDataTable(urlFrom("NYN", 1990));
@@ -35,4 +54,5 @@ $( document ).ready( function() {
             });
         },
         dataType: "json"});
+
 });
