@@ -38,8 +38,11 @@
        (json/write-str (no-join-query (d/connect db-uri)
                                     ["yearID" attr] [["playerID" pid]])))
   (GET ["/year-attribute/:year/:attr/" :year #"\d{4}" :attr #"\w*"] [year attr]
-       (json/write-str (basic-query (d/connect db-uri)
-                                    attr [["yearID" (Integer/parseInt year)]])))
+       (let [result (no-join-query (d/connect db-uri)
+                      ["playerID" attr] [["yearID" (Integer/parseInt year)]])
+             result2 {:data (map second (:data result))
+                      :columns [attr]}]
+         (json/write-str result2)))
 
   (route/resources "/")
   (route/not-found "<h1>Page not found</h1>"))
