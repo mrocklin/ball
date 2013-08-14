@@ -25,26 +25,24 @@
         y (lvar "y")
         valnames (map lvar attrs)
         keyword-attrs (map keywordify attrs)
-        where-clauses (map #(vector x %1 %2) keyword-attrs valnames)]
-    (->>
-      (q {:find  (concat ['?first '?last] valnames)
+        where-clauses (map #(vector x %1 %2) keyword-attrs valnames)
+        result (sort-by first
+      (q {:find  (concat ['?playerID '?first '?last] valnames)
         :where (concat [[x :lahman/teamID teamID]
                         [x :lahman/yearID year]
                         [x :lahman/playerID '?playerID]]
                        where-clauses
                        [[y :lahman/playerID '?playerID]
                         [y :lahman/nameFirst '?first]
-                        [y :lahman/nameLast '?last]])}
+                        [y :lahman/nameLast '?last]])} (db conn) ))]
+      {:data (map rest result)
+       :rows (map first result)
+       :columns (concat ["first" "last"] attrs)}))
 
-         (db conn) )
-      (sort-by second))))
-
-(defn team-response [conn team year attrs]
-  (let [data (team-record conn team year attrs)
-        strdata (map #(map str %) data)
-        all-attrs (concat ["First" "Last"] attrs)
-        strcols (into [] (for [attr all-attrs] {"sTitle" attr}))]
-        {"aaData" strdata "aoColumns" strcols}))
+(defn response [result]
+  (-> result
+    (assoc :data (map #(map str %) (:data result)))
+    (assoc :columns (into [] (for [attr (:columns result)] {"sTitle" attr})))))
 
 (defn teamIDs [conn]
   (map first (q '[:find ?team :where [?x :lahman/teamID ?team]] (db conn))))
@@ -62,18 +60,15 @@
         wanted-clauses     (for [attr wanted]
                              [x (keywordify attr) (lvar attr)])
         constraint-clauses (for [[attr value] constraints]
-                             [x (keywordify attr) value])]
-    (q {:find (map lvar wanted)
-        :where (concat constraint-clauses wanted-clauses)}
-       (db conn))))
-
-(defn no-join-response [conn wanted constraints]
-  (let [data (no-join-query conn wanted constraints)
-        strdata (map #(map str %) data)
-        strcols (into [] (for [attr wanted] {"sTitle" attr}))]
-        {"aaData" strdata "aoColumns" strcols}))
+                             [x (keywordify attr) value])
+        result
+      (q {:find (map lvar wanted)
+          :where (concat constraint-clauses wanted-clauses)} (db conn))]
+    {:data result
+     :columns wanted}))
 
 
 (defn basic-query [conn wanted constraints]
   " Like no-join-query but with only one wanted attribute "
-  (map first (no-join-query conn [wanted] constraints)))
+  (let [result (no-join-query conn [wanted] constraints)]
+    (assoc result :data (map first (:data result)))))

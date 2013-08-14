@@ -45,7 +45,7 @@
                     {"want" "AB"
                      "constraints" [["yearID" 1990] ["playerID" "strawda01"]]})]
          (:status r) => 200
-         (:body r) => (json/write-str [542]))
+         (json/read-str (:body r)) => {"data" [542] "columns" ["AB"]})
        (let [r (request "/query/" app
                     {"want" "AB"
                      "constraints" [["playerID" "strawda01"]]})]
@@ -59,8 +59,15 @@
          (:body r) => (contains "1991")))
 
 (fact "Player Query for Daryll includes his at-bats for 1990"
-       (let [r (request "/player/strawda01/" app)]
+       (let [r (request "/player/strawda01/" app)
+             body (-> r :body json/read-str)]
          (:status r) => 200
-         (:body r) => (contains "aaData")
-         (:body r) => (contains "aoColumns")
-         (:body r) => (contains "152"))) ;; TODO: Better test
+         (body "data") => truthy
+         (body "columns") => truthy
+         (str (body "data")) => (contains "152"))) ;; TODO: Better test
+
+(fact "player-name yields strawda01's player name"
+       (let [r (request "/player-name/strawda01/" app)]
+         (:status r) => 200
+         (json/read-str (:body r)) =>{"first" "Darryl" "last" "Strawberry"}))
+
