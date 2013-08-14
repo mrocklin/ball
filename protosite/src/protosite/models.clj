@@ -35,14 +35,13 @@
                        [[y :lahman/playerID '?playerID]
                         [y :lahman/nameFirst '?first]
                         [y :lahman/nameLast '?last]])} (db conn) ))]
-      {:data (map rest result)
+      {:data result
        :rows (map first result)
-       :columns (concat ["first" "last"] attrs)}))
+       :columns (concat ["playerID" "first" "last"] attrs)}))
 
 (defn response [result]
   (-> result
-    (assoc :data (map #(map str %) (:data result)))
-    (assoc :columns (into [] (for [attr (:columns result)] {"sTitle" attr})))))
+    (assoc :data (map #(map str %) (:data result)))))
 
 (defn teamIDs [conn]
   (map first (q '[:find ?team :where [?x :lahman/teamID ?team]] (db conn))))

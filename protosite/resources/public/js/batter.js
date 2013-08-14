@@ -9,5 +9,6 @@ $( document ).ready( function() {
     $("#batter").bind('keypress', function(e) {
         var batter = $("#batter").val() + String.fromCharCode(e.keyCode);
         updateDataTable(oTable, urlFrom(batter));
+
     });
 });
