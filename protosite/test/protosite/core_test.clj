@@ -71,9 +71,19 @@
          (:status r) => 200
          (json/read-str (:body r)) =>{"first" "Darryl" "last" "Strawberry"}))
 
-(fact "player-history yields array of values"
+(fact "player-history yields array of value pairs"
       (let [r (request "/player-history/strawda01/HR/" app)
             body (json/read-str (:body r))]
         (:status r) => 200
+        (body "columns") => ["yearID" "HR"]
+        (clojure.pprint/pprint (body "data"))
+        (clojure.pprint/pprint (map type (first (body "data"))))
+
+        (str (body "data")) => (contains (str [1990 37]))))
+
+(fact "year-attribute yields array of values"
+      (let [r (request "/year-attribute/1990/HR/" app)
+            body (json/read-str (:body r))]
+        (:status r) => 200
         (body "columns") => ["HR"]
-        (body "data") => truthy))
+        (body "data") => (contains 37)))
