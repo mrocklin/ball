@@ -4,8 +4,7 @@ function processData(data){
     return data;
 }
 
-function loadDataTable(url, callbacks){
-    console.log(callbacks);
+function loadDataTable(url){
     $.ajax({
         url: url,
         success: function(data, aStatus, dummy){
@@ -17,22 +16,17 @@ function loadDataTable(url, callbacks){
             "aaData": data.data,
             "iDisplayLength": 25,
             });
-            for (var i = 0; i < callbacks.length; i++)
-                callbacks[i]();
         },
         dataType: "json"});
 }
 
-function updateDataTable(tbl, url, callbacks){
+function updateDataTable(tbl, url){
     $.ajax({
         url: url,
         success: function(data, aStatus, dummy){
             data = processData(data);
             oTable.fnClearTable();
             oTable.fnAddData(data.data);
-            for (var i = 0; i < callbacks.length; i++){
-                callbacks[i]();
-            }
         },
     dataType: "json"});
 }
@@ -89,3 +83,11 @@ function histClickable(data){
     }
     return data;
 }
+
+function bins(arr, n){
+    var binsize = (_.max(arr) - _.min(arr)) / n;
+    var key = function(x){return Math.round(x / binsize) * binsize;}
+    var counts = _.countBy(arr, key);
+    return {centers: _.keys(counts), heights:_.values(counts)};
+}
+
