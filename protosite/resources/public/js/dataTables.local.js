@@ -4,7 +4,8 @@ function processData(data){
     return data;
 }
 
-function loadDataTable(url){
+function loadDataTable(url, callbacks){
+    console.log(callbacks);
     $.ajax({
         url: url,
         success: function(data, aStatus, dummy){
@@ -16,17 +17,22 @@ function loadDataTable(url){
             "aaData": data.data,
             "iDisplayLength": 25,
             });
+            for (var i = 0; i < callbacks.length; i++)
+                callbacks[i]();
         },
         dataType: "json"});
 }
 
-function updateDataTable(tbl, url){
+function updateDataTable(tbl, url, callbacks){
     $.ajax({
         url: url,
         success: function(data, aStatus, dummy){
             data = processData(data);
             oTable.fnClearTable();
             oTable.fnAddData(data.data);
+            for (var i = 0; i < callbacks.length; i++){
+                callbacks[i]();
+            }
         },
     dataType: "json"});
 }

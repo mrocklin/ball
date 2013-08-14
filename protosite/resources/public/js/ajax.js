@@ -23,14 +23,14 @@ function setUpClickAction(){
 
 $( document ).ready( function() {
 
-    loadDataTable(urlFrom("NYN", 1990));
+    loadDataTable(urlFrom("NYN", 1990), [setUpClickAction]);
 
     $("#year").bind('keypress', function(e) {
         var year = $("#year").val() + String.fromCharCode(e.keyCode);
         var teamName = $("#team").val();
         var team = teamMap[teamName];
         if(year.length == 4){
-            updateDataTable(oTable, urlFrom(team, year));
+            updateDataTable(oTable, urlFrom(team, year), [setUpClickAction]);
         }
     });
 
@@ -39,7 +39,7 @@ $( document ).ready( function() {
         var team = teamMap[teamName];
         var year = $("#year").val() ;
         if(_.contains(teamNames, team)){
-            updateDataTable(oTable, urlFrom(team, year));
+            updateDataTable(oTable, urlFrom(team, year), [setUpClickAction]);
         }
     });
 
