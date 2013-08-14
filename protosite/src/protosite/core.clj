@@ -35,8 +35,7 @@
                             team (Integer/parseInt year) batting-attrs))))
 
   (GET ["/player-history/:pid/:attr/" :pid #"\w*" :attr #"\w*"] [pid attr]
-       (let [result (basic-query (d/connect db-uri) attr [["playerID" pid]])]
-         (json/write-str (assoc result :data (map str (:data result))))))
+       (json/write-str (basic-query (d/connect db-uri) attr [["playerID" pid]])))
 
   (route/resources "/")
   (route/not-found "<h1>Page not found</h1>"))
