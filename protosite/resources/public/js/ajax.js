@@ -5,7 +5,7 @@ function urlFrom(team, year){
 
 function setUpClickAction(){
     // Set up click action
-    $(".clickableValue").click(function() {
+    $(document).on("click", ".clickableValue", function() {
         var playerID = $(this).parent().parent().attr('id');
         var attribute = $(this).parent().attr('id');
         $.ajax({
@@ -21,7 +21,9 @@ function setUpClickAction(){
 
 $( document ).ready( function() {
 
-    loadDataTable(urlFrom("NYN", 1990), [setUpClickAction]);
+    loadDataTable(urlFrom("NYN", 1990));
+
+    setUpClickAction();
 
     $("#year").bind('keypress', function(e) {
         var year = $("#year").val() + String.fromCharCode(e.keyCode);
@@ -37,7 +39,7 @@ $( document ).ready( function() {
         var team = teamMap[teamName];
         var year = $("#year").val() ;
         if(_.contains(teamNames, team)){
-            updateDataTable(oTable, urlFrom(team, year), [setUpClickAction]);
+            updateDataTable(oTable, urlFrom(team, year));
         }
     });
 
