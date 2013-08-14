@@ -35,7 +35,11 @@
                             team (Integer/parseInt year) batting-attrs))))
 
   (GET ["/player-history/:pid/:attr/" :pid #"\w*" :attr #"\w*"] [pid attr]
-       (json/write-str (basic-query (d/connect db-uri) attr [["playerID" pid]])))
+       (json/write-str (no-join-query (d/connect db-uri)
+                                    ["yearID" attr] [["playerID" pid]])))
+  (GET ["/year-attribute/:year/:attr/" :year #"\d{4}" :attr #"\w*"] [year attr]
+       (json/write-str (basic-query (d/connect db-uri)
+                                    attr [["yearID" (Integer/parseInt year)]])))
 
   (route/resources "/")
   (route/not-found "<h1>Page not found</h1>"))
