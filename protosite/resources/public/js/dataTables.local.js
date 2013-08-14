@@ -1,5 +1,6 @@
 function processData(data){
     data = addPlayerIDLinks(data);
+    data = histClickable(data);
     return data;
 }
 
@@ -23,8 +24,9 @@ function updateDataTable(tbl, url){
     $.ajax({
         url: url,
         success: function(data, aStatus, dummy){
+            data = processData(data);
             oTable.fnClearTable();
-            oTable.fnAddData(processData(data.data));
+            oTable.fnAddData(data.data);
         },
     dataType: "json"});
 }
@@ -61,3 +63,23 @@ function removePlayerID(data){
             data: _.map(data.data, removePlayerID)};
 }
 
+function histDiv(row, col, value){
+    return ("<div class=\"row\" id=\""+row+"\">" +
+            "<div class=\"col\" id=\""+col+"\">" +
+            "<div class=\"clickableValue\">" +
+            value +
+            "</div></div></div>");
+}
+
+
+function histClickable(data){
+    for(var r = 0; r < data.data.length; r++){
+        for(var c = 0; c < data.data[0].length; c++){
+            var row = data.rows[r];
+            var col = data.columns[c];
+            var value = data.data[r][c];
+            data.data[r][c] = histDiv(row, col, value);
+        }
+    }
+    return data;
+}
