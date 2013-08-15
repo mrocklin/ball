@@ -34,7 +34,7 @@ function setUpClickAction(){
                                            _.max(arr)]
                                   }],
                            div: "yeardata",
-                           size: [500, 200],
+                           size: [500, 300],
                            xlabel: data.columns[0],
                            ylabel: "counts",
                            extras: []
