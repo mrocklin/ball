@@ -12,12 +12,23 @@ function setUpClickAction(){
         $.ajax({
             url: "/player-history/"+playerID+"/"+attribute+"/",
             success: function(data, sStatus, dummy){
-                        var years = _.map(data.data, _.first);
-                        var values = _.map(data.data, _.last);
-                        $("#playerdata").html(
-                        "Years: "+years.join(', ') + "    "  +
-                        "Values: "+values.join(', '));
-                     },
+                        var years = data.rows;
+                        var values = data.data;
+                        var points = _.map(_.zip(years, values), function(A){return {x: A[0], y: A[1]};});
+                        $("#playerdata").html("");
+                        i3d3.plot({data: [{type: "lines",
+                                           values: points,
+                                           color: "blue"},
+                                          {type: "points",
+                                           values: points,
+                                           color: "black"}],
+                                   div: "playerdata",
+                                   size: [500, 300],
+                                   xlabel: "Year",
+                                   ylabel: data.columns[0],
+                                   extras: []
+                                  });
+            },
             dataType: "json"
             });
         $.ajax({
