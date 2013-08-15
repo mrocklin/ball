@@ -36,3 +36,11 @@ div.tooltip {  // Adapted from http://bl.ocks.org/mbostock/1087001
 .clickableValue {
     cursor: pointer;
 }
+#leftSection{
+    float:left;
+    width:60%;
+}
+#rightSection{
+    float:right;
+    width:40%;
+}

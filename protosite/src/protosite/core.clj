@@ -35,8 +35,13 @@
                             team (Integer/parseInt year) batting-attrs))))
 
   (GET ["/player-history/:pid/:attr/" :pid #"\w*" :attr #"\w*"] [pid attr]
-       (json/write-str (no-join-query (d/connect db-uri)
-                                    ["yearID" attr] [["playerID" pid]])))
+       (let [result (no-join-query (d/connect db-uri)
+                                   ["yearID" attr] [["playerID" pid]])
+             data (sort (:data result))
+             years (map first data)
+             values (map second data)]
+          (json/write-str {:data values :rows years :columns [attr]})))
+
   (GET ["/year-attribute/:year/:attr/" :year #"\d{4}" :attr #"\w*"] [year attr]
        (let [result (no-join-query (d/connect db-uri)
                       ["playerID" attr] [["yearID" (Integer/parseInt year)]])
