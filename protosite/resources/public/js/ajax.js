@@ -1,68 +1,73 @@
+function urlFrom(team, year){
+    return "/team/" + team + "/" + year + "/";
+}
 
 
-
+function setUpClickAction(){
+    // Set up click action
+    $(document).on("click", ".clickableValue", function() {
+        var playerID = $(this).parent().parent().attr('id');
+        var attribute = $(this).parent().attr('id');
+        var year = $("#year").val() ;
+        $.ajax({
+            url: "/player-history/"+playerID+"/"+attribute+"/",
+            success: function(data, sStatus, dummy){
+                        var years = _.map(data.data, _.first);
+                        var values = _.map(data.data, _.last);
+                        $("#playerdata").html(
+                        "Years: "+years.join(', ') + "    "  +
+                        "Values: "+values.join(', '));
+                     },
+            dataType: "json"
+            });
+        $.ajax({
+            url: "/year-attribute/"+year+"/"+attribute+"/",
+            dataType: "json",
+            success: function(data, sStatus, dummy){
+                        var bars = bins(data.data, 20);
+                        $("#yeardata").html(
+                        "BarCenters: "+bars.centers.join(', ') + "    " +
+                        "BarHeights: "+bars.heights.join(', '));
+                        tmp = data.data;
+                     }
+        });
+    });
+}
 
 $( document ).ready( function() {
 
-    oTable = $('#example').dataTable({
-        "bProcessing": true,
-           "sAjaxSource": "/team/NYN/1990/",
-           "iDisplayLength": 25,
-           "fnServerData": function ( sUrl, aoData, fnCallback, oSettings ) {
-               oSettings.jqXHR = $.ajax( {
-                   "url":  sUrl,
-               "data": aoData,
-               "success": function (json) {
-                   if ( json.sError ) {
-                       oSettings.oApi._fnLog( oSettings, 0, json.sError );
-                   }
+    loadDataTable(urlFrom("SFN", 2012));
 
-                   $(oSettings.oInstance).trigger('xhr', [oSettings, json]);
-                   fnCallback( json );
-               },
-               "dataType": "json",
-               "cache": true,
-               "type": "GET",
-               "error": function (xhr, error, thrown) {
-                   if ( error == "parsererror" ) {
-                       oSettings.oApi._fnLog( oSettings, 0, "DataTables warning: JSON data from "+
-                           "server could not be parsed. This is caused by a JSON formatting error." );
-                   }
-               }
-               } );
-           },
-    });
-
-    function updateDataTable(tbl, team, year){
-        team = teamMap[team];
-        var url = "/team/" + team + "/" + year + "/";
-        tbl.fnReloadAjax(url);
-    }
+    setUpClickAction();
 
     $("#year").bind('keypress', function(e) {
         var year = $("#year").val() + String.fromCharCode(e.keyCode);
-        var team = $("#team").val()
+        var teamName = $("#team").val();
+        var team = teamMap[teamName];
         if(year.length == 4){
-            updateDataTable(oTable, team, year);
+            updateDataTable(oTable, urlFrom(team, year), [setUpClickAction]);
         }
     });
 
     $("#team").bind('keypress', function(e) {
-        var team = $("#team").val() + String.fromCharCode(e.keyCode);
+        var teamName = $("#team").val() + String.fromCharCode(e.keyCode);
+        var team = teamMap[teamName];
         var year = $("#year").val() ;
-        if(contains(teamNames, team)){
-            updateDataTable(oTable, team, year);
+        if(_.contains(teamNames, team)){
+            updateDataTable(oTable, urlFrom(team, year));
         }
     });
 
+    // Set up auto-complete
     $.ajax({
         url: "/teamnames/",
         success: function(data, aStatus, dummy){
             teamMap = data;
-            teamNames = keys(data);
+            teamNames = _.keys(data);
             $( "#team" ).autocomplete({
                 source: teamNames
-            });},
+            });
+        },
         dataType: "json"});
 
 });

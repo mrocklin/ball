@@ -2,6 +2,7 @@
   (:use [midje.sweet])
   (:require [compojure.route :as route]
             [compojure.core :refer :all]
+            [clojure.data.json :as json]
             [protosite.core :refer :all]))
 
 
@@ -38,3 +39,51 @@
        (let [r (request "/team/NYN/1990/" app)]
          (:status r) => 200
          (:body r) => (contains "152"))))
+
+(facts "basic query gets a functioning route"
+       (let [r (request "/query/" app
+                    {"want" "AB"
+                     "constraints" [["yearID" 1990] ["playerID" "strawda01"]]})]
+         (:status r) => 200
+         (json/read-str (:body r)) => {"data" [542] "columns" ["AB"]})
+       (let [r (request "/query/" app
+                    {"want" "AB"
+                     "constraints" [["playerID" "strawda01"]]})]
+         (:status r) => 200
+         (:body r) => (contains "542"))
+       (let [r (request "/query/" app
+                    {"want" "yearID"
+                     "constaints" [["name" "New York Mets"]]})]
+         (:status r) => 200
+         (:body r) => (contains "1990")
+         (:body r) => (contains "1991")))
+
+(fact "Player Query for Daryll includes his at-bats for 1990"
+       (let [r (request "/player/strawda01/" app)
+             body (-> r :body json/read-str)]
+         (:status r) => 200
+         (body "data") => truthy
+         (body "columns") => truthy
+         (str (body "data")) => (contains "152"))) ;; TODO: Better test
+
+(fact "player-name yields strawda01's player name"
+       (let [r (request "/player-name/strawda01/" app)]
+         (:status r) => 200
+         (json/read-str (:body r)) =>{"first" "Darryl" "last" "Strawberry"}))
+
+(fact "player-history yields array of value pairs"
+      (let [r (request "/player-history/strawda01/HR/" app)
+            body (json/read-str (:body r))]
+        (:status r) => 200
+        (body "columns") => ["yearID" "HR"]
+        (clojure.pprint/pprint (body "data"))
+        (clojure.pprint/pprint (map type (first (body "data"))))
+
+        (str (body "data")) => (contains (str [1990 37]))))
+
+(fact "year-attribute yields array of values"
+      (let [r (request "/year-attribute/1990/HR/" app)
+            body (json/read-str (:body r))]
+        (:status r) => 200
+        (body "columns") => ["HR"]
+        (body "data") => (contains 37)))
