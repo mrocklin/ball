@@ -18,16 +18,24 @@
     <script src="/js/dataTables.local.js"></script>
     <script src="/js/ajax.js"></script>
 
-    <form> Year <input type="text" id="year" width=5 value="2012" />
-      Team <input type="text" id="team" width=4 value="San Francisco Giants"/>
-    </form>
 
-    <table cellpadding="0" cellspacing="0" border="0" class="display"
-      id="datatable">
-    </table>
+    <div id="wrap">
+      <div id="header">
+        <form> Year <input type="text" id="year" width=5 value="2012" />
+          Team <input type="text" id="team" width=4 value="San Francisco Giants"/>
+        </form>
+      </div>
+      <div id="leftSection">
+        <table cellpadding="0" cellspacing="0" border="0" class="display"
+          id="datatable"></table>
+      </div>
+      <div id="rightSection">
+          <p>    <div id="playerdata"></div>    </p>
+          <p>    <div id="yeardata"></div>    </p>
+      </div>
+    </div>
 
-    <p>    <div id="playerdata"></div>    </p>
-    <p>    <div id="yeardata"></div>    </p>
+
 
   </body>
 </html>
