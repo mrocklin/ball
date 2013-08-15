@@ -24,13 +24,14 @@ function setUpClickAction(){
             url: "/year-attribute/"+year+"/"+attribute+"/",
             dataType: "json",
             success: function(data, sStatus, dummy){
-                var bars = bins(data.data, 20);
+                var arr = _.compact(data.data); // remove zeros
+                var bars = bins(arr, 20);
                 $("#yeardata").html("");
                 i3d3.plot({data: [{type: "bars",
                                    bins: bars.heights,
                                    color: "blue",
-                                   range: [_.min(data.data), 
-                                           _.max(data.data)]
+                                   range: [_.min(arr),
+                                           _.max(arr)]
                                   }],
                            div: "yeardata",
                            size: [500, 200],
@@ -38,7 +39,7 @@ function setUpClickAction(){
                            ylabel: "y axis",
                            extras: []
                           });
-                
+
                         // $("#yeardata").html(
                         // "BarCenters: "+bars.centers.join(', ') + "    " +
                         // "BarHeights: "+bars.heights.join(', '));
