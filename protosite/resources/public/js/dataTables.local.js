@@ -14,7 +14,7 @@ function loadDataTable(url){
                 "bProcessing": true,
             "aoColumns": addTitleToColumns(data.columns),
             "aaData": data.data,
-            "iDisplayLength": 25,
+            "iDisplayLength": 25
             });
         },
         dataType: "json"});
@@ -86,8 +86,11 @@ function histClickable(data){
 
 function bins(arr, n){
     var binsize = (_.max(arr) - _.min(arr)) / n;
-    var key = function(x){return Math.round(x / binsize) * binsize;}
+    var key = function(x) { 
+        return Math.round(x / binsize) * binsize;
+    };
     var counts = _.countBy(arr, key);
-    return {centers: _.keys(counts), heights:_.values(counts)};
+    return {centers: _.keys(counts), 
+            heights: _.values(counts)};
 }
 
