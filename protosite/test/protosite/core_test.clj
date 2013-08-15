@@ -75,11 +75,9 @@
       (let [r (request "/player-history/strawda01/HR/" app)
             body (json/read-str (:body r))]
         (:status r) => 200
-        (body "columns") => ["yearID" "HR"]
-        (clojure.pprint/pprint (body "data"))
-        (clojure.pprint/pprint (map type (first (body "data"))))
-
-        (str (body "data")) => (contains (str [1990 37]))))
+        (body "columns") => ["HR"]
+        (sort (body "rows")) => (body "rows")
+        ((zipmap (body "rows") (body "data")) 1990) => 37))
 
 (fact "year-attribute yields array of values"
       (let [r (request "/year-attribute/1990/HR/" app)

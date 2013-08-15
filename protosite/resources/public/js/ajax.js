@@ -12,33 +12,45 @@ function setUpClickAction(){
         $.ajax({
             url: "/player-history/"+playerID+"/"+attribute+"/",
             success: function(data, sStatus, dummy){
-                        var years = _.map(data.data, _.first);
-                        var values = _.map(data.data, _.last);
-                        $("#playerdata").html(
-                        "Years: "+years.join(', ') + "    "  +
-                        "Values: "+values.join(', '));
-                     },
+                        var years = data.rows;
+                        var values = data.data;
+                        var points = _.map(_.zip(years, values), function(A){return {x: A[0], y: A[1]};});
+                        $("#playerdata").html("");
+                        i3d3.plot({data: [{type: "lines",
+                                           values: points,
+                                           color: "blue"},
+                                          {type: "points",
+                                           values: points,
+                                           color: "black"}],
+                                   div: "playerdata",
+                                   size: [500, 300],
+                                   xlabel: "Year",
+                                   ylabel: data.columns[0],
+                                   extras: []
+                                  });
+            },
             dataType: "json"
             });
         $.ajax({
             url: "/year-attribute/"+year+"/"+attribute+"/",
             dataType: "json",
             success: function(data, sStatus, dummy){
-                var bars = bins(data.data, 20);
+                var arr = _.compact(data.data); // remove zeros
+                var bars = bins(arr, 20);
                 $("#yeardata").html("");
                 i3d3.plot({data: [{type: "bars",
                                    bins: bars.heights,
                                    color: "blue",
-                                   range: [_.min(data.data), 
-                                           _.max(data.data)]
+                                   range: [_.min(arr),
+                                           _.max(arr)]
                                   }],
                            div: "yeardata",
-                           size: [500, 200],
-                           xlabel: "x axis",
-                           ylabel: "y axis",
+                           size: [500, 300],
+                           xlabel: data.columns[0],
+                           ylabel: "counts",
                            extras: []
                           });
-                
+
                         // $("#yeardata").html(
                         // "BarCenters: "+bars.centers.join(', ') + "    " +
                         // "BarHeights: "+bars.heights.join(', '));
