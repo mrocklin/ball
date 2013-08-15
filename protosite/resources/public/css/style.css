@@ -32,3 +32,7 @@ div.tooltip {  // Adapted from http://bl.ocks.org/mbostock/1087001
   border-radius: 3px;
   pointer-events: none;
 }
+
+.clickableValue {
+    cursor: pointer;
+}
