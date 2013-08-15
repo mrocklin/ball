@@ -10,7 +10,7 @@ function loadDataTable(url){
         success: function(data, aStatus, dummy){
             data = processData(data);
             Data = data;
-            oTable = $('#example').dataTable({
+            oTable = $('#datatable').dataTable({
                 "bProcessing": true,
             "aoColumns": addTitleToColumns(data.columns),
             "aaData": data.data,
@@ -86,11 +86,11 @@ function histClickable(data){
 
 function bins(arr, n){
     var binsize = (_.max(arr) - _.min(arr)) / n;
-    var key = function(x) { 
+    var key = function(x) {
         return Math.round(x / binsize) * binsize;
     };
     var counts = _.countBy(arr, key);
-    return {centers: _.keys(counts), 
+    return {centers: _.keys(counts),
             heights: _.values(counts)};
 }
 
