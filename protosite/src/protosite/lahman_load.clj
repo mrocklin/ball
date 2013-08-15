@@ -7,7 +7,9 @@
 
 
 (def filenames ["resources/lahman2012/Master.csv"
-                "resources/lahman2012/Batting.csv"])
+                "resources/lahman2012/Batting.csv"
+                "resources/lahman2012/Teams.csv"
+                "resources/lahman2012/TeamsFranchises.csv"])
 
 
 (defn get-facts [] (->> filenames
@@ -29,6 +31,12 @@
        (do
          (f (first s))
          (recur f (rest s) (inc' n))))))
+
+
+(defn get-facts []
+  (->> filenames
+    (map datomic-facts-from-filename)
+    flatten))
 
 
 (defn populate [uri]
