@@ -48,8 +48,8 @@
 
 (defn team-names [conn]
   (into {} (q '[:find ?teamName ?teamID
-                :where [?x :lahman/name ?teamName]
-                       [?x :lahman/teamID ?teamID]] (db conn))))
+            :where [?x :lahman/name ?teamName]
+                   [?x :lahman/teamID ?teamID]] (db conn))))
 
 (defn no-join-query [conn wanted constraints]
   " A simple select &wanted from all-tables where &constraints=values query
