@@ -32,7 +32,11 @@ function updateDataTable(tbl, url){
 }
 
 function addTitleToColumns(columns){
-    return _.map(columns, function(c){return {sTitle: c};});
+    return _.map(columns, function(c){
+        return {sTitle: c,
+                sWidth: "1em",
+                sType: "html"};
+        });
 }
 
 // Operates in place
