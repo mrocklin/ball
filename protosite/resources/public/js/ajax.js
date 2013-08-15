@@ -35,8 +35,8 @@ function setUpClickAction(){
                                   }],
                            div: "yeardata",
                            size: [500, 200],
-                           xlabel: "x axis",
-                           ylabel: "y axis",
+                           xlabel: data.columns[0],
+                           ylabel: "counts",
                            extras: []
                           });
 
