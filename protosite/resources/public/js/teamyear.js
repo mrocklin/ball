@@ -101,4 +101,12 @@ $( document ).ready( function() {
         },
         dataType: "json"});
 
+    $.ajax({
+        url: "/query/",
+        data: {want: "AB", constraints: [["playerID", "strawda01"]]},
+        dataType: "json",
+        success: function(data, aStatus, dummy){
+            alert(data);
+        }});
+
 });
