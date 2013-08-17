@@ -8,6 +8,7 @@ function setUpClickAction(){
     $(document).on("click", ".clickableValue", function() {
         var playerID = $(this).parent().parent().attr('id');
         var attribute = $(this).parent().attr('id');
+        var val = Number($(this).text());
         var year = $("#year").val() ;
         $.ajax({
             url: "/player-history/"+playerID+"/"+attribute+"/",
@@ -43,7 +44,11 @@ function setUpClickAction(){
                                    color: "blue",
                                    range: [_.min(arr),
                                            _.max(arr)]
-                                  }],
+                                  },
+                                  {type: "lines",
+                                   values: [{x: val, y: 0},
+                                            {x: val, y: _.max(bars.heights)}],
+                                   color: "red"}],
                            div: "yeardata",
                            size: [500, 300],
                            xlabel: data.columns[0],
