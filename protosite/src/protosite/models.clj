@@ -35,9 +35,9 @@
                        [[y :lahman/playerID '?playerID]
                         [y :lahman/nameFirst '?first]
                         [y :lahman/nameLast '?last]])} (db conn) ))]
-      {:data result
+      {:data (map rest result)
        :rows (map first result)
-       :columns (concat ["playerID" "first" "last"] attrs)}))
+       :columns (concat ["first" "last"] attrs)}))
 
 (defn response [result]
   (-> result
