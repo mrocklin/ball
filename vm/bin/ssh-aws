@@ -2,7 +2,7 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-ssh ubuntu@`$DIR/hostname-aws` \
+ssh vagrant@`$DIR/hostname-aws` \
      -p 22 \
      -o DSAAuthentication=yes \
      -o LogLevel=FATAL \
