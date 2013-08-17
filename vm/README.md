@@ -1,27 +1,33 @@
 You can create a local or AWS VM.  `cd` to either `vbox` and/or `aws` and `vagrant up`, `vagrant provision`, `vagrant ssh`, ....
 
+Provisioning an AWS Instance
+----------------------------
+
 For AWS provisioning to work, you'll want the following:
 
 - `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` defined as environment variables
 - `qball.pem` installed in `~/.ssh` with mode 0600.
 
-When connecting to an AWS VM, note that `vagrant ssh` puts you in the
-`ubuntu` account; you'll want to `sudo su - vagrant`. Or you can `ssh
-vagrant@FILL_ME_IN.compute.amazonaws.com -p 22 -o
-DSAAuthentication=yes -o LogLevel=FATAL -o StrictHostKeyChecking=no -o
-UserKnownHostsFile=/dev/null -o IdentitiesOnly=yes -i
-$HOME/.ssh/qball.pem -o ForwardAgent=yes`. `FILL_ME_IN` is whatever
-AWS address which was assigned when the instance was created. Note
-that https://github.com/Instagram/ec2-ssh is very helpful for pulling
-down AWS long names from the "short" name assigned to your instance
-(usually, `qball`).  As an example,
+When creating a new AWS instance, be sure to update `bin/hostname-aws` with the new hostname.
 
-    $  ec2-host qball
-    ec2-54-213-101-195.us-west-2.compute.amazonaws.com
+Connecting to the AWS Instance
+------------------------------
 
+`bin/ssh-aws` should work for `ssh`.
 
-On the VM:
+To `rsync` a directory, use `bin/rsync-aws`.  For example,
+
+    bin/rsync-aws ../protosite /tmp/protosite
+
+will rsync `protosite` to `/tmp/protosite` on the remote instance.
+
+Clojure on the AWS Instance
+---------------------------
+
+On the VM you can, for example,
 
     lein new foo
     cd foo
     lein repl
+
+Datomic should already be running.
