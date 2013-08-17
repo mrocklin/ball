@@ -10,4 +10,4 @@ rsync -vurt -e \
      -o UserKnownHostsFile=/dev/null \
      -o IdentitiesOnly=yes \
      -i ${HOME}/.ssh/qball.pem \
-     -o ForwardAgent=yes" $1 vagrant@`$DIR/hostname-aws`:$2
+     -o ForwardAgent=yes" $1 vagrant@`$DIR/hostname-aws`:/$2
