@@ -35,9 +35,9 @@
         (d/transact conn master-facts)
         (d/transact conn batting-facts)
         (let [result (team-record conn "NYN" 1990 batting-attrs)]
-          (:data result) => [["Mark" "Carreon" 82 188 30 47 12 0 10 26 15]
-                             ["Darryl" "Strawberry" 152 542 92 150 18 1 37 108 70]]
-          (:columns result) => (concat ["first" "last"] batting-attrs)
+          (:data result) => [["Mark Carreon" 82 188 30 47 12 0 10 26 15]
+                             ["Darryl Strawberry" 152 542 92 150 18 1 37 108 70]]
+          (:columns result) => (concat ["player-name"] batting-attrs)
           (:rows result) => ["carrema01" "strawda01"])
         (let [result (response (team-record conn "NYN" 1990 batting-attrs))]
           (every? #(instance? String %) (first (:data result))) => true)))
