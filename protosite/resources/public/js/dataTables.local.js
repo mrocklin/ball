@@ -41,13 +41,10 @@ function addTitleToColumns(columns){
 
 // Operates in place
 function addPlayerIDLinks(data){
-    if (_.contains(data.columns, "playerID")){
-        var idx = data.columns.indexOf("playerID");
-        for(var r = 0; r < data.data.length; r++){
-            var pid = data.data[r][idx];
-            var val = data.data[r][0];
-            data.data[r][0] = "<a href=\"/player/"+pid+"/\">"+val+"</a>";
-        }
+    for(var r = 0; r < data.data.length; r++){
+        var pid = data.rows[r];
+        var val = data.data[r][0];
+        data.data[r][0] = "<a href=\"/player/"+pid+"/\">"+val+"</a>";
     }
     return data;
 }
