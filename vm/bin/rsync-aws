@@ -1,0 +1,13 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+rsync -vurt -e \
+  "ssh -p 22 \
+     -o DSAAuthentication=yes \
+     -o LogLevel=FATAL \
+     -o StrictHostKeyChecking=no \
+     -o UserKnownHostsFile=/dev/null \
+     -o IdentitiesOnly=yes \
+     -i ${HOME}/.ssh/qball.pem \
+     -o ForwardAgent=yes" $1 ubuntu@`$DIR/hostname-aws`:/$2
