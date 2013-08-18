@@ -32,11 +32,18 @@ function updateDataTable(tbl, url){
 }
 
 function addTitleToColumns(columns){
-    return _.map(columns, function(c){
+    var newcolumns = _.map(columns, function(c){
         return {sTitle: c,
                 sWidth: "1em",
+                sClass: "rightAlign",
                 sType: "html"};
         });
+    // Left-most column considered a header column
+    var c = columns[0];
+    newcolumns[0] = {sTitle: c,
+                     sClass: "leftAlign",
+                     sCellType: "th"};
+    return newcolumns;
 }
 
 // Operates in place
@@ -67,7 +74,7 @@ function removePlayerID(data){
 function histDiv(row, col, value){
     return ("<div class=\"row\" id=\""+row+"\">" +
             "<div class=\"col\" id=\""+col+"\">" +
-            "<div class=\"clickableValue\">" +
+            "<div class=\"clickableValue rightAlign\">" +
             value +
             "</div></div></div>");
 }
@@ -75,7 +82,7 @@ function histDiv(row, col, value){
 
 function histClickable(data){
     for(var r = 0; r < data.data.length; r++){
-        for(var c = 0; c < data.data[0].length; c++){
+        for(var c = 1; c < data.data[0].length; c++){ // skip first column
             var row = data.rows[r];
             var col = data.columns[c];
             var value = data.data[r][c];
