@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo ec2-54-213-101-195.us-west-2.compute.amazonaws.com

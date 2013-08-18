@@ -15,10 +15,18 @@ file { "/home/$user":
 user { $user:
   ensure => present,
   gid => $user,
-  groups => ["staff", "root"],
+  groups => ["staff", "root", "admin"],
   shell => "/bin/bash",
   home => "/home/$user",
   require => Group[$user]
+}
+
+file { "/etc/sudoers.d/91-sudoers-vagrant":
+  ensure => file,
+  owner => "root",
+  group => "root",
+  mode => '440',
+  content => "vagrant ALL=(ALL) NOPASSWD:ALL\n"
 }
 
 file { "/home/$user/.ssh":
