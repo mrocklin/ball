@@ -12,9 +12,17 @@
                 "resources/lahman2012/TeamsFranchises.csv"])
 
 
-(defn get-facts [] (->> filenames
-                        (map datomic-facts-from-filename)
-                        flatten))
+;; Stuart Halloway
+;; https://groups.google.com/forum/#!msg/datomic/ZethRt6dqxs/GceIbj53_P8J
+(defn transact-pbatch
+    "Submit txes in batches of size batch-size, default is 100"
+    ([conn txes] (transact-pbatch conn txes 100))
+    ([conn txes batch-size]
+          (->> (partition-all batch-size txes)
+                      (pmap #(d/transact-async conn (mapcat identity %)))
+                      (map deref)
+                      dorun)
+          :ok))
 
 
 (defn count-with-action
@@ -33,10 +41,12 @@
          (recur f (rest s) (inc' n))))))
 
 
-(defn get-facts []
-  (->> filenames
-    (map datomic-facts-from-filename)
-    flatten))
+(defn get-transactions []
+  (for [f
+    (->> filenames
+      (map datomic-facts-from-filename)
+      flatten)]
+    [f]))
 
 
 (defn populate [uri]
@@ -48,9 +58,8 @@
       (let [conn (d/connect uri)]
         (d/transact conn schema)
         (println "Added Schema; processing facts...")
-        (let [facts (get-facts)
-              n (count-with-action #(d/transact conn [%]) facts)]
-          (println (format "Processed %d facts" n)))
+        (transact-pbatch conn (get-transactions))
+        (println "Processed facts")
         (println "Requesting index")
         (d/request-index conn)
         (println "Shutting down")
