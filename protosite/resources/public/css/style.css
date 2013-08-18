@@ -38,11 +38,11 @@ div.tooltip {  // Adapted from http://bl.ocks.org/mbostock/1087001
 }
 
 .rightAlign {
-    text-align:right;
+    text-align: right;
 }
 
 .leftAlign {
-    text-align:left;
+    text-align: left;
 }
 
 #leftSection{
