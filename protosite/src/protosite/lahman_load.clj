@@ -41,13 +41,6 @@
           :ok))
 
 
-(defn get-transactions []
-  (map vector
-       (->> filenames
-             (map datomic-facts-from-filename)
-             lazy-flatten)))
-
-
 (defn populate [uri]
   (println "Trying to create DB...")
   (if-not (d/create-database uri)
