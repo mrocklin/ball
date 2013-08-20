@@ -11,28 +11,25 @@
   (:use [datomic.api :only [db q] :as d]))
 
 
+(defn handle-query [request f]
+   (let [params (request :params)
+         body   (request :body)
+         want   (if (contains? params "want") (params "want")
+         (-> request :query-string form-decode json/read-str (get "want")))
+         constraints (if (contains? params "constraints")
+                                   (params "constraints")
+         (-> request :query-string form-decode json/read-str (get "constraints")))]
+      (json/write-str (f (d/connect db-uri) want constraints))))
+
+
 (defroutes app
   (GET "/" [] "<h1>Welcome to Fantasy Baseball!</h1>")
   (GET "/teamids/" [] (json/write-str (teamIDs (d/connect db-uri))))
   (GET "/teamnames/" [] (json/write-str (team-names (d/connect db-uri))))
   (GET "/query/" request
-       (let [params (request :params)
-             body   (request :body)
-             want   (if (contains? params "want") (params "want")
-             (-> request :query-string form-decode json/read-str (get "want")))
-             constraints (if (contains? params "constraints")
-                                       (params "constraints")
-             (-> request :query-string form-decode json/read-str (get "constraints")))]
-          (json/write-str (basic-query (d/connect db-uri) want constraints))))
+       (handle-query request basic-query))
   (GET "/querys/" request
-       (let [params (request :params)
-             body   (request :body)
-             want   (if (contains? params "want") (params "want")
-             (-> request :query-string form-decode json/read-str (get "want")))
-             constraints (if (contains? params "constraints")
-                                       (params "constraints")
-             (-> request :query-string form-decode json/read-str (get "constraints")))]
-          (json/write-str (no-join-query (d/connect db-uri) want constraints))))
+       (handle-query request no-join-query))
   (GET ["/player-name/:pid/" :pid #"\w*"] [pid]
        (->> (no-join-query (d/connect db-uri)
                           ["nameFirst" "nameLast"] [["playerID" pid]])
