@@ -96,14 +96,16 @@ $( document ).ready( function() {
 
     // Set up auto-complete
     $.ajax({
-        url: "/teamnames/",
+        url: "/querys/",
+        data: JSON.stringify({want: ["name", "teamID"],
+                              constraints: []}),
+        dataType: "json",
         success: function(data, aStatus, dummy){
-            teamMap = data;
-            teamNames = _.keys(data);
+            teamMap = _.object(data.data);
+            teamNames = _.map(data.data, _.first);
             $( "#team" ).autocomplete({
                 source: teamNames
             });
         },
         dataType: "json"});
-
 });

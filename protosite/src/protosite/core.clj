@@ -22,11 +22,8 @@
                        (-> request :query-string form-decode json/read-str (get "constraints")))]
       (json/write-str (f (d/connect db-uri) want constraints))))
 
-
 (defroutes app
   (GET "/" [] "<h1>Welcome to Fantasy Baseball!</h1>")
-  (GET "/teamids/" [] (json/write-str (teamIDs (d/connect db-uri))))
-  (GET "/teamnames/" [] (json/write-str (team-names (d/connect db-uri))))
   (GET "/query/" request
        (handle-query request basic-query))
   (GET "/querys/" request
