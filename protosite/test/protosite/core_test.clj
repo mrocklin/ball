@@ -69,10 +69,3 @@
        (let [r (request "/player-name/strawda01/" app)]
          (:status r) => 200
          (json/read-str (:body r)) =>{"first" "Darryl" "last" "Strawberry"}))
-
-(fact "year-attribute yields array of values"
-      (let [r (request "/year-attribute/1990/HR/" app)
-            body (json/read-str (:body r))]
-        (:status r) => 200
-        (body "columns") => ["HR"]
-        (body "data") => (contains 37)))
