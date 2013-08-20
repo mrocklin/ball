@@ -14,11 +14,12 @@
 (defn handle-query [request f]
    (let [params (request :params)
          body   (request :body)
-         want   (if (contains? params "want") (params "want")
-         (-> request :query-string form-decode json/read-str (get "want")))
+         want   (if (contains? params "want")
+                  (params "want")
+                  (-> request :query-string form-decode json/read-str (get "want")))
          constraints (if (contains? params "constraints")
-                                   (params "constraints")
-         (-> request :query-string form-decode json/read-str (get "constraints")))]
+                       (params "constraints")
+                       (-> request :query-string form-decode json/read-str (get "constraints")))]
       (json/write-str (f (d/connect db-uri) want constraints))))
 
 
