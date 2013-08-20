@@ -16,7 +16,6 @@
             :params (first params)
             :headers {}}))
 
-
 (facts "About home page"
        (let [r (request "/" app)]
          (:status r) => 200

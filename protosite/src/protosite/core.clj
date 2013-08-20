@@ -1,21 +1,32 @@
 (ns protosite.core
   (:gen-class)
   (:require [ring.adapter.jetty :refer :all]
+            [ring.util.codec :refer [form-decode]]
             [clojure.data.json :as json]
             [compojure.route :as route]
+            [compojure.handler :as handler]
             [compojure.core :refer :all]
             [protosite.models :refer :all]
             [protosite.lahman-datomic :refer [db-uri]])
   (:use [datomic.api :only [db q] :as d]))
 
+(def s "want=AB&constraints%5B0%5D%5BplayerID%5D=strawda01")
+(def s "want=C&constraints%5B0%5D%5B%5D=A&constraints%5B0%5D%5B%5D=B")
+(clojure.pprint/pprint (form-decode s))
 
-(defroutes app
+(defroutes _app
   (GET "/" [] "<h1>Welcome to Fantasy Baseball!</h1>")
   (GET "/teamids/" [] (json/write-str (teamIDs (d/connect db-uri))))
   (GET "/teamnames/" [] (json/write-str (team-names (d/connect db-uri))))
-  (GET "/query/" request (let [want (get-in request [:params "want"])
-                               constraints (get-in request [:params "constraints"])]
-          (json/write-str (basic-query (d/connect db-uri) want constraints))))
+  (POST "/query/" request
+       (let [params (request :params)
+             body   (request :body)
+             query  (request :query-string)]
+                 (clojure.pprint/pprint request)
+                 (clojure.pprint/pprint params)
+                 (clojure.pprint/pprint body)
+                 (clojure.pprint/pprint (json/read-str body))
+          (json/write-str (basic-query (d/connect db-uri) (params :want) (params :constraints)))))
   (GET "/querys/" request (let [want (get-in request [:params "want"])
                                constraints (get-in request [:params "constraints"])]
           (json/write-str (response (no-join-query (d/connect db-uri) want constraints)))))
@@ -51,6 +62,9 @@
 
   (route/resources "/")
   (route/not-found "<h1>Page not found</h1>"))
+
+
+(def app (handler/wrap-nested-params (handler/api _app)))
 
 ;(run-jetty handler {:port 3000})
 
