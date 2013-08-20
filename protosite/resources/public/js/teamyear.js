@@ -11,11 +11,14 @@ function setUpClickAction(){
         var val = Number($(this).text());
         var year = $("#year").val() ;
         $.ajax({
-            url: "/player-history/"+playerID+"/"+attribute+"/",
+            url: "/querys/",
+            data: JSON.stringify({want: ["yearID", attribute],
+                                  constraints: [["playerID", playerID]]}),
             success: function(data, sStatus, dummy){
-                        var years = data.rows;
-                        var values = data.data;
-                        var points = _.map(_.zip(years, values), function(A){return {x: A[0], y: A[1]};});
+                        var arr = _.sortBy(data.data, _.first);
+                        var points = _.map(arr, function(A){
+                                            return {x: A[0], y: A[1]};
+                                            });
                         $("#playerdata").html("");
                         i3d3.plot({data: [{type: "lines",
                                            values: points,
