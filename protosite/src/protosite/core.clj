@@ -24,7 +24,7 @@
 
 (defroutes app
   (GET "/" [] "<h1>Welcome to Fantasy Baseball!</h1>")
-  (GET "/query/" request
+  (GET "/lahman-column/" request
        (handle-query request basic-query))
   (GET "/lahman-table/" request
        (handle-query request no-join-query))

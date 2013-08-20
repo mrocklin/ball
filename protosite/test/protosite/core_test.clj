@@ -39,18 +39,18 @@
          (:status r) => 200
          (:body r) => (contains "152"))))
 
-(facts "basic query gets a functioning route"
-       (let [r (request "/query/" app
+(facts "lahman-table query gets a functioning route"
+       (let [r (request "/lahman-column/" app
                     {"want" "AB"
                      "constraints" [["yearID" 1990] ["playerID" "strawda01"]]})]
          (:status r) => 200
          (json/read-str (:body r)) => {"data" [542] "columns" ["AB"]})
-       (let [r (request "/query/" app
+       (let [r (request "/lahman-column/" app
                     {"want" "AB"
                      "constraints" [["playerID" "strawda01"]]})]
          (:status r) => 200
          (:body r) => (contains "542"))
-       (let [r (request "/query/" app
+       (let [r (request "/lahman-column/" app
                     {"want" "yearID"
                      "constraints" [["name" "New York Mets"]]})]
          (:status r) => 200
