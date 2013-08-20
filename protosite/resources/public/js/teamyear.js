@@ -11,7 +11,7 @@ function setUpClickAction(){
         var val = Number($(this).text());
         var year = $("#year").val() ;
         $.ajax({
-            url: "/querys/",
+            url: "/lahman-table/",
             data: JSON.stringify({want: ["yearID", attribute],
                                   constraints: [["playerID", playerID]]}),
             success: function(data, sStatus, dummy){
@@ -36,7 +36,7 @@ function setUpClickAction(){
             dataType: "json"
             });
         $.ajax({
-            url: "/querys/",
+            url: "/lahman-table/",
             data: JSON.stringify({want: ["playerID", attribute],
                                   constraints: [["yearID", Number(year)]]}),
             dataType: "json",
@@ -96,7 +96,7 @@ $( document ).ready( function() {
 
     // Set up auto-complete
     $.ajax({
-        url: "/querys/",
+        url: "/lahman-table/",
         data: JSON.stringify({want: ["name", "teamID"],
                               constraints: []}),
         dataType: "json",

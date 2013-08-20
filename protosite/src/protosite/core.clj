@@ -26,7 +26,7 @@
   (GET "/" [] "<h1>Welcome to Fantasy Baseball!</h1>")
   (GET "/query/" request
        (handle-query request basic-query))
-  (GET "/querys/" request
+  (GET "/lahman-table/" request
        (handle-query request no-join-query))
   (GET ["/player-name/:pid/" :pid #"\w*"] [pid]
        (->> (no-join-query (d/connect db-uri)
