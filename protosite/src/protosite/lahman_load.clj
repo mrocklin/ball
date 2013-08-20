@@ -11,6 +11,22 @@
                 "resources/lahman2012/Teams.csv"
                 "resources/lahman2012/TeamsFranchises.csv"])
 
+(defn lazy-mapcat
+  "
+  Fully lazy version of mapcat.  See:
+  http://clojurian.blogspot.com/2012/11/beware-of-mapcat.html
+  "
+  [f coll]
+  (lazy-seq
+   (if (not-empty coll)
+     (concat
+      (f (first coll))
+      (lazy-mapcat f (rest coll))))))
+
+
+(defn lazy-flatten [coll] (lazy-mapcat identity coll))
+
+
 ;; Stuart Halloway
 ;; https://groups.google.com/forum/#!msg/datomic/ZethRt6dqxs/GceIbj53_P8J
 (defn transact-pbatch
@@ -18,34 +34,17 @@
     ([conn txes] (transact-pbatch conn txes 100))
     ([conn txes batch-size]
           (->> (partition-all batch-size txes)
-                      (pmap #(d/transact-async conn (mapcat identity %)))
-                      (map deref)
-                      dorun)
+               (pmap #(d/transact-async conn (lazy-flatten %)))
+               (map deref)
+               dorun)
           :ok))
 
 
-(defn count-with-action
-  "
-  Apply f to s side-effect-ly while counting elements. Keep from
-  blowing Java heap when processing / counting large numbers of
-  elements.
-  "
-  ([f s]
-     (count-with-action f s 0))
-  ([f s n]
-     (if-not (seq s)
-       n
-       (do
-         (f (first s))
-         (recur f (rest s) (inc' n))))))
-
-
 (defn get-transactions []
-  (for [f
-    (->> filenames
-      (map datomic-facts-from-filename)
-      flatten)]
-    [f]))
+  (map vector
+       (->> filenames
+             (map datomic-facts-from-filename)
+             lazy-flatten)))
 
 
 (defn populate [uri]
@@ -57,7 +56,10 @@
       (let [conn (d/connect uri)]
         (d/transact conn schema)
         (println "Added Schema; processing facts...")
-        (transact-pbatch conn (get-transactions))
+
+        (doseq [filen filenames]
+          (transact-pbatch conn (map vector (datomic-facts-from-filename filen))))
+
         (println "Processed facts")
         (println "Requesting index")
         (d/request-index conn)
