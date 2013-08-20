@@ -36,10 +36,12 @@ function setUpClickAction(){
             dataType: "json"
             });
         $.ajax({
-            url: "/year-attribute/"+year+"/"+attribute+"/",
+            url: "/querys/",
+            data: JSON.stringify({want: ["playerID", attribute],
+                                  constraints: [["yearID", Number(year)]]}),
             dataType: "json",
             success: function(data, sStatus, dummy){
-                var arr = _.compact(data.data); // remove zeros
+                var arr = _.compact(_.map(data.data, _.last)); // remove zeros
                 var bars = bins(arr, 20);
                 $("#yeardata").html("");
                 i3d3.plot({data: [{type: "bars",

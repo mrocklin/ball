@@ -46,13 +46,6 @@
        (json/write-str (response (team-record (d/connect db-uri)
                             team (Integer/parseInt year) batting-attrs))))
 
-  (GET ["/year-attribute/:year/:attr/" :year #"\d{4}" :attr #"\w*"] [year attr]
-       (let [result (no-join-query (d/connect db-uri)
-                      ["playerID" attr] [["yearID" (Integer/parseInt year)]])
-             result2 {:data (map second (:data result))
-                      :columns [attr]}]
-         (json/write-str result2)))
-
   (route/resources "/")
   (route/not-found "<h1>Page not found</h1>"))
 
