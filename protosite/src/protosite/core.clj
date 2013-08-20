@@ -10,29 +10,29 @@
             [protosite.lahman-datomic :refer [db-uri]])
   (:use [datomic.api :only [db q] :as d]))
 
-(def s "want=AB&constraints%5B0%5D%5BplayerID%5D=strawda01")
-(def s "want=C&constraints%5B0%5D%5B%5D=A&constraints%5B0%5D%5B%5D=B")
-(def s "{%22want%22:%22C%22,%22constraints%22:[[%22A%22,%22B%22]]}")
-(clojure.pprint/pprint (form-decode s))
 
-(defroutes _app
+(defroutes app
   (GET "/" [] "<h1>Welcome to Fantasy Baseball!</h1>")
   (GET "/teamids/" [] (json/write-str (teamIDs (d/connect db-uri))))
   (GET "/teamnames/" [] (json/write-str (team-names (d/connect db-uri))))
   (GET "/query/" request
        (let [params (request :params)
              body   (request :body)
-             data   (-> request :query-string form-decode json/read-str)
-             want   (if (contains? params :want) (params :want)
-                                                 (data   "want"))
-             constraints (if (contains? params :constraints)
-                                       (params :constraints)
-                                       (data   "constraints"))]
-          (json/write-str (basic-query (d/connect db-uri) want constraints)))
-
-  (GET "/querys/" request (let [want (get-in request [:params "want"])
-                               constraints (get-in request [:params "constraints"])]
-          (json/write-str (response (no-join-query (d/connect db-uri) want constraints)))))
+             want   (if (contains? params "want") (params "want")
+             (-> request :query-string form-decode json/read-str (get "want")))
+             constraints (if (contains? params "constraints")
+                                       (params "constraints")
+             (-> request :query-string form-decode json/read-str (get "constraints")))]
+          (json/write-str (basic-query (d/connect db-uri) want constraints))))
+  (GET "/querys/" request
+       (let [params (request :params)
+             body   (request :body)
+             want   (if (contains? params "want") (params "want")
+             (-> request :query-string form-decode json/read-str (get "want")))
+             constraints (if (contains? params "constraints")
+                                       (params "constraints")
+             (-> request :query-string form-decode json/read-str (get "constraints")))]
+          (json/write-str (no-join-query (d/connect db-uri) want constraints))))
   (GET ["/player-name/:pid/" :pid #"\w*"] [pid]
        (->> (no-join-query (d/connect db-uri)
                           ["nameFirst" "nameLast"] [["playerID" pid]])
@@ -65,8 +65,6 @@
 
   (route/resources "/")
   (route/not-found "<h1>Page not found</h1>"))
-
-(def app (handler/api _app))
 
 ;(run-jetty handler {:port 3000})
 

@@ -52,7 +52,7 @@
          (:body r) => (contains "542"))
        (let [r (request "/query/" app
                     {"want" "yearID"
-                     "constaints" [["name" "New York Mets"]]})]
+                     "constraints" [["name" "New York Mets"]]})]
          (:status r) => 200
          (:body r) => (contains "1990")
          (:body r) => (contains "1991")))
