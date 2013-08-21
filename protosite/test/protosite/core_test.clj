@@ -16,7 +16,6 @@
             :params (first params)
             :headers {}}))
 
-
 (facts "About home page"
        (let [r (request "/" app)]
          (:status r) => 200
@@ -40,20 +39,20 @@
          (:status r) => 200
          (:body r) => (contains "152"))))
 
-(facts "basic query gets a functioning route"
-       (let [r (request "/query/" app
+(facts "lahman-table query gets a functioning route"
+       (let [r (request "/lahman-column/" app
                     {"want" "AB"
                      "constraints" [["yearID" 1990] ["playerID" "strawda01"]]})]
          (:status r) => 200
          (json/read-str (:body r)) => {"data" [542] "columns" ["AB"]})
-       (let [r (request "/query/" app
+       (let [r (request "/lahman-column/" app
                     {"want" "AB"
                      "constraints" [["playerID" "strawda01"]]})]
          (:status r) => 200
          (:body r) => (contains "542"))
-       (let [r (request "/query/" app
+       (let [r (request "/lahman-column/" app
                     {"want" "yearID"
-                     "constaints" [["name" "New York Mets"]]})]
+                     "constraints" [["name" "New York Mets"]]})]
          (:status r) => 200
          (:body r) => (contains "1990")
          (:body r) => (contains "1991")))
@@ -70,18 +69,3 @@
        (let [r (request "/player-name/strawda01/" app)]
          (:status r) => 200
          (json/read-str (:body r)) =>{"first" "Darryl" "last" "Strawberry"}))
-
-(fact "player-history yields array of value pairs"
-      (let [r (request "/player-history/strawda01/HR/" app)
-            body (json/read-str (:body r))]
-        (:status r) => 200
-        (body "columns") => ["HR"]
-        (sort (body "rows")) => (body "rows")
-        ((zipmap (body "rows") (body "data")) 1990) => 37))
-
-(fact "year-attribute yields array of values"
-      (let [r (request "/year-attribute/1990/HR/" app)
-            body (json/read-str (:body r))]
-        (:status r) => 200
-        (body "columns") => ["HR"]
-        (body "data") => (contains 37)))

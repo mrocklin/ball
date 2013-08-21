@@ -11,11 +11,14 @@ function setUpClickAction(){
         var val = Number($(this).text());
         var year = $("#year").val() ;
         $.ajax({
-            url: "/player-history/"+playerID+"/"+attribute+"/",
+            url: "/lahman-table/",
+            data: JSON.stringify({want: ["yearID", attribute],
+                                  constraints: [["playerID", playerID]]}),
             success: function(data, sStatus, dummy){
-                        var years = data.rows;
-                        var values = data.data;
-                        var points = _.map(_.zip(years, values), function(A){return {x: A[0], y: A[1]};});
+                        var arr = _.sortBy(data.data, _.first);
+                        var points = _.map(arr, function(A){
+                                            return {x: A[0], y: A[1]};
+                                            });
                         $("#playerdata").html("");
                         i3d3.plot({data: [{type: "lines",
                                            values: points,
@@ -33,10 +36,12 @@ function setUpClickAction(){
             dataType: "json"
             });
         $.ajax({
-            url: "/year-attribute/"+year+"/"+attribute+"/",
+            url: "/lahman-table/",
+            data: JSON.stringify({want: ["playerID", attribute],
+                                  constraints: [["yearID", Number(year)]]}),
             dataType: "json",
             success: function(data, sStatus, dummy){
-                var arr = _.compact(data.data); // remove zeros
+                var arr = _.compact(_.map(data.data, _.last)); // remove zeros
                 var bars = bins(arr, 20);
                 $("#yeardata").html("");
                 i3d3.plot({data: [{type: "bars",
@@ -91,14 +96,16 @@ $( document ).ready( function() {
 
     // Set up auto-complete
     $.ajax({
-        url: "/teamnames/",
+        url: "/lahman-table/",
+        data: JSON.stringify({want: ["name", "teamID"],
+                              constraints: []}),
+        dataType: "json",
         success: function(data, aStatus, dummy){
-            teamMap = data;
-            teamNames = _.keys(data);
+            teamMap = _.object(data.data);
+            teamNames = _.map(data.data, _.first);
             $( "#team" ).autocomplete({
                 source: teamNames
             });
         },
         dataType: "json"});
-
 });
