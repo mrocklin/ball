@@ -39,7 +39,7 @@
          (:status r) => 200
          (:body r) => (contains "152"))))
 
-(facts "lahman-table query gets a functioning route"
+(facts "lahman-column query gets a functioning route"
        (let [r (request "/lahman-column/" app
                     {"want" "AB"
                      "constraints" [["yearID" 1990] ["playerID" "strawda01"]]})]
