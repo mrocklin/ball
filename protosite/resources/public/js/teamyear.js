@@ -32,7 +32,7 @@ function setUpClickAction(){
                                    ylabel: data.columns[0],
                                    extras: []
                                   });
-            },
+                        },
             dataType: "json"
             });
         $.ajax({
@@ -42,7 +42,8 @@ function setUpClickAction(){
             dataType: "json",
             success: function(data, sStatus, dummy){
                 var arr = _.compact(_.map(data.data, _.last)); // remove zeros
-                var bars = bins(arr, 20);
+                var numbins = 20;
+                var bars = bins(arr, numbins);
                 $("#yeardata").html("");
                 i3d3.plot({data: [{type: "bars",
                                    bins: bars.heights,
@@ -50,6 +51,7 @@ function setUpClickAction(){
                                    range: [_.min(arr),
                                            _.max(arr)]
                                   },
+                                  // Add red line at player's value
                                   {type: "lines",
                                    values: [{x: val, y: 0},
                                             {x: val, y: _.max(bars.heights)}],
@@ -60,11 +62,6 @@ function setUpClickAction(){
                            ylabel: "counts",
                            extras: []
                           });
-
-                        // $("#yeardata").html(
-                        // "BarCenters: "+bars.centers.join(', ') + "    " +
-                        // "BarHeights: "+bars.heights.join(', '));
-                        // tmp = data.data;
                      }
         });
     });
